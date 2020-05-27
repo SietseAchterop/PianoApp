@@ -3,18 +3,18 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         debug {
-            storeFile file('/home/sietse/Android/keystore.jks')
+            storeFile file('/home/sietse/Android/mykey.jks')
             storePassword '12tlawdr'
             keyAlias = 'key0'
             keyPassword '12tlawdr'
         }
     }
-    compileSdkVersion 26
+    compileSdkVersion 29
     buildToolsVersion "28.0.3"
 
     defaultConfig {
         applicationId "com.dfrobot.angelo.blunobasicdemo"
-        minSdkVersion 26
+        minSdkVersion 23
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
