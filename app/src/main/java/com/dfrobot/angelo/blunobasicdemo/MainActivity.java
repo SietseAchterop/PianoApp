@@ -22,11 +22,8 @@ public class MainActivity extends BlunoLibrary {
     private Button buttonScan;
     private EditText serialSendText;
     private TextView serialReceivedText;
-    private SeekBar seekBar1;
-    private SeekBar seekBar2;
     private TextView textseekb1;
     private TextView textseekb2;
-    private Button calbutton;
     private Button execbutton;
 
     private static String all = " ";
@@ -84,7 +81,7 @@ public class MainActivity extends BlunoLibrary {
             }
         });
 
-        seekBar1 = findViewById(R.id.seekBar1);
+        SeekBar seekBar1 = findViewById(R.id.seekBar1);
         seekBar1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -103,7 +100,7 @@ public class MainActivity extends BlunoLibrary {
 
             }
         });
-        seekBar2 = findViewById(R.id.seekBar2);
+        SeekBar seekBar2 = findViewById(R.id.seekBar2);
         seekBar2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -125,8 +122,6 @@ public class MainActivity extends BlunoLibrary {
         textseekb1 = findViewById(R.id.textseekb1);
         textseekb2 = findViewById(R.id.textseekb2);
 
-        calbutton = findViewById(R.id.calbutton);
-
         execbutton = findViewById(R.id.execbutton);
 
 
@@ -140,6 +135,7 @@ public class MainActivity extends BlunoLibrary {
     public void execlick(View view) {
         // initial click gets current position
         if (initpos) {
+            all = " ";
             serialSend("e\r");
         } else {
             //Log.w("YYYY", "all " + all);
@@ -218,7 +214,7 @@ public class MainActivity extends BlunoLibrary {
                 // should contain: Enc: x,yX
                 temp = all.replace("Enc: ", "");
                 String tempp = temp.replace("X", "");
-                tempp = tempp.replaceAll("\\s+","");
+                tempp = tempp.replaceAll("\\s+", "");
                 String[] temp2 = tempp.split(",");
                 int l = (int)Integer.parseInt(temp2[0])/250;
                 int r = (int)Integer.parseInt(temp2[1])/250;
