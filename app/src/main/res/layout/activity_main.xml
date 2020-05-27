@@ -1,0 +1,141 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
+
+
+    <Button
+        android:id="@+id/buttonScan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/serialSendText"
+        android:layout_alignParentTop="true"
+        android:text="@string/scan" />
+
+    <Button
+        android:id="@+id/buttonSerialSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/serialSendText"
+        android:layout_alignEnd="@+id/serialSendText"
+        android:text="@string/send_data" />
+
+    <EditText
+        android:id="@+id/serialSendText"
+        android:layout_width="310dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/buttonScan"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="6dp"
+        android:bufferType="editable"
+        android:ems="10"
+        android:hint="@string/data_sending_area"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/receivedText"
+        android:layout_width="wrap_content"
+        android:layout_height="39dp"
+        android:layout_below="@+id/serialSendText"
+        android:layout_alignStart="@+id/serialSendText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="14dp"
+        android:ems="10"
+        android:text="@string/received_data"
+        android:textSize="25sp" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="329dp"
+        android:layout_height="90dp"
+        android:layout_below="@+id/receivedText"
+        android:layout_alignStart="@+id/receivedText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="-33dp">
+
+        <TextView
+            android:id="@+id/serialReceivedText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
+
+
+    <SeekBar
+        android:id="@+id/seekBar1"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="250dp"
+        android:layout_height="75dp"
+        android:layout_below="@+id/scrollView"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="6dp"
+        android:max="10"
+        android:progress="3" />
+
+    <TextView
+        android:id="@+id/textseekb1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scrollView"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="33dp"
+        android:layout_toStartOf="@id/seekBar1"
+        android:text="L" />
+
+    <SeekBar
+        android:id="@+id/seekBar2"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="250dp"
+        android:layout_height="75dp"
+        android:layout_below="@+id/seekBar1"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="6dp"
+        android:max="10"
+        android:progress="3" />
+
+    <TextView
+        android:id="@+id/textseekb2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/seekBar1"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="35dp"
+        android:layout_marginBottom="234dp"
+        android:layout_toStartOf="@+id/seekBar2"
+        android:text="R" />
+
+    <Button
+        android:id="@+id/calbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/seekBar2"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:onClick="calclick"
+        android:text="@string/calibrate" />
+
+    <Button
+        android:id="@+id/execbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/seekBar2"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:onClick="execlick"
+        android:text="@string/initexecute" />
+
+</RelativeLayout>

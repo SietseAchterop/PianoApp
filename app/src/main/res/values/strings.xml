@@ -1,0 +1,29 @@
+<resources>
+
+    <string name="app_name">PianoApp</string>
+    <string name="ble_not_supported">BLE is not supported</string>
+    <string name="label_data">Data:</string>
+    <string name="label_device_address">Device address:</string>
+    <string name="label_state">State:</string>
+    <string name="no_data">No data</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="title_devices">BLE Device Scan</string>
+    <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
+    <string name="unknown_device">Unknown device</string>
+    <string name="unknown_characteristic">Unknown characteristic</string>
+    <string name="unknown_service">Unknown service</string>
+
+    <!-- Menu items -->
+    <string name="action_settings">Action settings</string>
+    <string name="connecting">Connecting</string>
+    <string name="scan">Scan</string>
+    <string name="scanning">Scanning</string>
+    <string name="isdisconnecting">is Disconnecting</string>
+    <string name="send_data">Send Data</string>
+    <string name="received_data">Received Data:</string>
+    <string name="data_sending_area">Data sending area</string>
+    <string name="calibrate">Calibrate</string>
+    <string name="execute">Execute</string>
+    <string name="initexecute">Get position</string>
+</resources>
