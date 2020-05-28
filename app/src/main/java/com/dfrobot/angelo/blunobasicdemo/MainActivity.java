@@ -216,8 +216,8 @@ public class MainActivity extends BlunoLibrary {
                 String tempp = temp.replace("X", "");
                 tempp = tempp.replaceAll("\\s+", "");
                 String[] temp2 = tempp.split(",");
-                int l = (int)Integer.parseInt(temp2[0])/250;
-                int r = (int)Integer.parseInt(temp2[1])/250;
+                int l = (Integer.parseInt(temp2[0])+125)/250;
+                int r = (Integer.parseInt(temp2[1])+125)/250;
                 textseekb1.setText("L " + l);
                 textseekb2.setText("R " + r);
                 initpos = false;
