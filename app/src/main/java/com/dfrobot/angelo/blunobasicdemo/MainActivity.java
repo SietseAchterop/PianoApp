@@ -134,6 +134,7 @@ public class MainActivity extends BlunoLibrary {
 
     public void execlick(View view) {
         // initial click gets current position
+        boolean dirty = false;
         if (initpos) {
             all = " ";
             serialSend("e\r");
@@ -142,10 +143,15 @@ public class MainActivity extends BlunoLibrary {
             if (lpos != oldlpos) {
                 serialSend("pl" + lpos + "\r");
                 oldlpos = lpos;
+                dirty = true;
             }
             if (rpos != oldrpos) {
                 serialSend("pr" + rpos + "\r");
                 oldrpos = rpos;
+                dirty = true;
+            }
+            if (dirty) {
+                serialSend("X0\r");
             }
         }
     }

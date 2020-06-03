@@ -11,23 +11,11 @@
 #define SERIAL  0
 #define VERSION 1
 
+#include <WMath.h>
+
 #include <EEPROM.h>
+
 #include <TimerOne.h>
-
-// adresses in EEPROM
-#define Pval1adr  0
-#define Ival1adr  4
-#define Dval1adr  8
-#define Pval2adr 12
-#define Ival2adr 16
-#define Dval2adr 20
-#define pos1adr  24
-#define pos2adr  28
-#define SERNUM   32
-#define VERNUM   36
-#define EEPCNT   40
-#define freeadr  44
-
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 #include "utility/Adafruit_MS_PWMServoDriver.h"
@@ -60,11 +48,10 @@ Adafruit_DCMotor *motorR = AFMS.getMotor(2);
 byte speed1 = 0, speed2 = 0;    // intended motor speed
 byte received           = 0;    // # of characters received
 volatile int encoder1, oldenc1, encoder2, oldenc2;
-int setpoint1, setpoint2;
-volatile int corr1, corr2, setp1, setp2, ran = 0;
+volatile int corr1, corr2, setp1, setp2;
 int calenc1, calenc2;
-
 byte mot;
+
 /* control w, cal, m and p commands set control
    0: off
    1: w, cal
@@ -72,14 +59,25 @@ byte mot;
  */
 byte control  = 0;
 
-// init from EEPROM/FSM
-#define Pdefault 3
-#define Idefault 0
-#define Ddefault 1
-unsigned int pval1, ival1, dval1, pval2, ival2, dval2;
+// EEPROM data structure
+struct SavedData {
+  unsigned int pval1, ival1, dval1, pval2, ival2, dval2;
+  int setpoint1, setpoint2;
+  unsigned int serialnumber, version, eepromcnt;
+};
 
-// todo
-unsigned int serialnumber, version, eepromcnt;
+  SavedData mydata;
+
+void myEEPROMput(void) {
+  mydata.eepromcnt++;
+  EEPROM.put(0, mydata);
+}
+
+
+// default PID values
+#define Pdefault 5
+#define Idefault 0
+#define Ddefault 2
 
 //
 byte comavail  = 0;   // a command is read
@@ -87,10 +85,7 @@ char command[10];     // command buffer
 byte comind    = 0;   // index into buffer
 byte comm      = 0;   // command to be executed
 char printstr[22] ;    // string for printing. Langer dan 20 over ble lijkt onbetrouwbaar
-// debugging
-char printstr2[22] ;
-byte debug       = 1;
-unsigned int debugcnt = 0;
+int debugcnt = 0;
 
 /* timer1_counter used for
    - w command
@@ -145,19 +140,20 @@ void setup()
 
   pinMode(ledje, OUTPUT);
 
-  retrieve_from_eeprom();
-  if (pval1 == -1) {
+  EEPROM.get(0, mydata);
+  if (mydata.pval1 == -1) {
     // put initial values in eeprom
-    pval1 = Pdefault; ival1 = Idefault; dval1 = Ddefault;
-    pval2 = Pdefault; ival2 = Idefault; dval2 = Ddefault;
-    encoder1 = 0; encoder2 = 0; setpoint1 = 0; setpoint2 = 0;
-    serialnumber = SERIAL; version = VERSION; eepromcnt = 0;
-    save_to_eeprom(false);
+    mydata.pval1 = Pdefault; mydata.ival1 = Idefault; mydata.dval1 = Ddefault;
+    mydata.pval2 = Pdefault; mydata.ival2 = Idefault; mydata.dval2 = Ddefault;
+    mydata.setpoint1 = 0; mydata.setpoint2 = 0;
+    mydata.serialnumber = SERIAL; mydata.version = VERSION; mydata.eepromcnt = 0;
+    EEPROM.put(0, mydata);
   } else {
-    setpoint1 = encoder1;
-    setpoint2 = encoder2;
+    encoder1 = mydata.setpoint1;
+    encoder2 = mydata.setpoint2;
   }
   
+  randomSeed(encoder1+encoder2+mydata.eepromcnt);
   
   // motor shield init
   AFMS.begin();
@@ -188,18 +184,16 @@ void timer1_int(void)        // interrupt service routine
   
   // set actual setpoints
   if (timesw == 0) {
-    setp1 = setpoint1;
-    setp2 = setpoint2;
+    setp1 = mydata.setpoint1;
+    setp2 = mydata.setpoint2;
   }
-  else { // iedere seconde
+  else { // new position every second
     if (timer1_counter%100 == 0) {
       digitalWrite(ledje, !digitalRead(ledje));
-      setp1 = ran;
-      setp2 = ran;
-      ran = (ran + 321)%3000;
+      setp1 = GEAR*random(0,20);
+      setp2 = GEAR*random(0,20);
       timesw--;
       if (timesw == 0) {
-	//afhandelen als een setpoint commando
 	motors_stop();
       }
     }
@@ -213,7 +207,7 @@ void timer1_int(void)        // interrupt service routine
   // intgr = ...
   oldenc1 = encoder1;
   // PID 1
-  corr1 = pval1*diff + dval1*sp;   // + ival2*intgr;
+  corr1 = mydata.pval1*diff + mydata.dval1*sp;   // + ival2*intgr;
 
   // Encoder 2
   diff = setp2- encoder2;
@@ -221,7 +215,7 @@ void timer1_int(void)        // interrupt service routine
   // intgr = ...
   oldenc2 = encoder2;
   // PID 2
-  corr2 = pval2*diff + dval2*sp;   // + ival2*intgr;
+  corr2 = mydata.pval2*diff + mydata.dval2*sp;   // + ival2*intgr;
 
 
   if (control) { // control loop active
@@ -284,33 +278,30 @@ void loop()
     case 'i':                   // return info
       sprintf(printstr, "Info: %d, %d, ", control, timesw);
       Serial.print(printstr);
-      sprintf(printstr, "SP:   %d, %d, ", setpoint1, setpoint2);
+      sprintf(printstr, "SP:   %d, %d, ", mydata.setpoint1, mydata.setpoint2);
       Serial.print(printstr);
       sprintf(printstr, "ENC:  %d,   %d\n\r", encoder1, encoder2);
-      comm = 10;   // to stop calibration and motor
+      comm = 11;   // to stop calibration and motor
       break;
     case 'J' :
-      sprintf(printstr, "S: %d, %d, %d\n\r", serialnumber, version, eepromcnt);
-      Serial.print(printstr);
+      sprintf(printstr, "S: %d, %d, %d\n\r", mydata.serialnumber, mydata.version, mydata.eepromcnt);
       break;
     case 'a':                   // return pid values
       if (!mot) {
-	sprintf(printstr, "PID1: %d, %d, %d\n\r", pval1, ival1, dval1);
+	sprintf(printstr, "PID1: %d, %d, %d\n\r", mydata.pval1, mydata.ival1, mydata.dval1);
       }
       else {
-	sprintf(printstr, "PID2: %d, %d, %d\n\r", pval2, ival2, dval2);
+	sprintf(printstr, "PID2: %d, %d, %d\n\r", mydata.pval2, mydata.ival2, mydata.dval2);
       }
       break;
     case 'X':                   //  save/retrieve data to EEPROM
       if(command[1] == '0')
-	save_to_eeprom(true);   // use encoder values
+        myEEPROMput();
       else
-	if  (command[1] == '2')
-	  save_to_eeprom(false);  // use setpoints
-	else
-	  retrieve_from_eeprom();	  
+        EEPROM.get(0, mydata);
       break;
     case 'k':
+      timesw = 0;
       motors_stop();
       break;
 
@@ -332,39 +323,38 @@ void loop()
       break;
     case 'P':               // P value  (-1 to reset eeprom values)
       if (!mot)
-	pval1 = atoi(command+2);
+	mydata.pval1 = atoi(command+2);
       else
-	pval2 = atoi(command+2);
+	mydata.pval2 = atoi(command+2);
       break;
     case 'I':               // I value
       if (!mot)
-	ival1 = atoi(command+2);
+	mydata.ival1 = atoi(command+2);
       else
-	ival2 = atoi(command+2);
+	mydata.ival2 = atoi(command+2);
       break;
     case 'D':               // D value
       if (!mot)
-	dval1 = atoi(command+2);
+	mydata.dval1 = atoi(command+2);
       else
-	dval2 = atoi(command+2);
+	mydata.dval2 = atoi(command+2);
       break;
     case 'm':               //  set setpoint
       timer1_counter = 0;
-      control = 5;
       if (!mot)
-	setpoint1 = atoi(command+2);
+	mydata.setpoint1 = atoi(command+2);
       else
-	setpoint2 = atoi(command+2);
+	mydata.setpoint2 = atoi(command+2);
+      control = 5;
       break;
 
-    case 'p':               //  set setpoint grof. Saves setpoints.
+    case 'p':               //  set setpoint grof.
       timer1_counter = 0;
-      control = 5;
       if (!mot)
-	setpoint1 = GEAR*atoi(command+2);
+	mydata.setpoint1 = GEAR*atoi(command+2);
       else
-	setpoint2 = GEAR*atoi(command+2);
-      save_to_eeprom(false);
+	mydata.setpoint2 = GEAR*atoi(command+2);
+      control = 5;
       break;
 
     // waggel x keer heen en weer
@@ -380,9 +370,8 @@ void loop()
       sprintf(printstr, "Control: %d\n\r", control);
       break;
 
-    // initialisatie procedure, door motoren kort vast te laten lopen.
+    // calibrate positions. Make it run into the end-stops.
     case 'q':
-      //   beide motoren even met snelheid x laten lopen, met timer1_counter:  qx
       spp = atoi(command+1);
       comm = 1;
       break;
@@ -392,26 +381,29 @@ void loop()
       noInterrupts();
       encoder1 = 0;
       encoder2 = 0;
-      setpoint1 = 0;
-      setpoint2 = 0;
+      mydata.setpoint1 = 0;
+      mydata.setpoint2 = 0;
       interrupts();
       break;
     case 'S' :
-      serialnumber = atoi(command+1);
-      save_to_eeprom(false);
+      mydata.serialnumber = atoi(command+1);
+      break;
+    case 'V' :
+      mydata.version = atoi(command+1);
       break;
     default:
       // comm = 0;
       sprintf(printstr, "NACK\n\r");
       break;
     }
+    // evt. alleen print indien ongelijk aan "ack"
     Serial.print(printstr);
     // prepare for next command
     comavail = 0;
     comind = 0;
   }
 
-  // execute 'q' command
+  // execute calibrate, 'q', command
   //  noodstop via command: i
   switch (comm) {
   case 0:
@@ -425,7 +417,7 @@ void loop()
     break;
   case 2:
     // to get started
-    if (timer1_counter > 40) {
+    if (timer1_counter > 10) {
       //encoders
       calenc1 = encoder1;
       calenc2 = encoder2;
@@ -495,25 +487,31 @@ void loop()
     }
     break;
   case 6: // both, move a bit out of the stop
-    setpoint1 = encoder1 + 100;
-    setpoint2 = encoder2 + 100;
+    mydata.setpoint1 = encoder1 + 100;
+    mydata.setpoint2 = encoder2 + 100;
     control = 1;
     timer1_counter = 0;
     comm = 7;
     break;
   case 7:
-    if (timer1_counter >  30) {
+    if (timer1_counter > 30) {
       motors_stop();
       // update variables
-      setpoint1 = 0;
-      setpoint2 = 0;
-      encoder1 = setpoint1;
-      encoder2 = setpoint2;
-      save_to_eeprom(false);
+      mydata.setpoint1 = 0;
+      mydata.setpoint2 = 0;
+      encoder1 = mydata.setpoint1;
+      encoder2 = mydata.setpoint2;
+      myEEPROMput();
       comm = 0;
+      Serial.print("Caldone\n\r");
     }
     break;
   case 10:
+    motors_stop();
+    comm = 0;
+    Serial.print("Calfailed\n\r");
+    break;
+  case 11:
     motors_stop();
     comm = 0;
     break;
@@ -528,16 +526,20 @@ void loop()
     if (timer1_counter > 30) control = 4;
     break;
   case 4:
-    if ( (abs(setpoint1 - encoder1) < 10) &&
-	 (abs(setpoint2 - encoder2) < 10)) {
+    if ( (abs(mydata.setpoint1 - encoder1) < 10) &&
+	 (abs(mydata.setpoint2 - encoder2) < 10)) {
       timer1_counter = 0;
       control = 3;
+    } else {
+      if (timer1_counter > 300) {
+	motors_stop();
+	Serial.print("P failed!\n\r");
+      }
     }
     break;
   case 3:
     if (timer1_counter > 20) {
       motors_stop();
-      //      Serial.print("Stopped.\n\r");
     }
     break;
   default:
@@ -551,46 +553,6 @@ void loop()
   }
 }
 
-
-void save_to_eeprom(bool savenc) {
-
-  eepromcnt++;
-  
-  EEPROM.put(Pval1adr, pval1);
-  EEPROM.put(Ival1adr, ival1);
-  EEPROM.put(Dval1adr, dval1);
-  EEPROM.put(Pval2adr, pval2);
-  EEPROM.put(Ival2adr, ival2);
-  EEPROM.put(Dval2adr, dval2);
-  if (savenc) {
-    EEPROM.put(pos1adr, encoder1);
-    EEPROM.put(pos2adr, encoder2);
-  } else {
-    EEPROM.put(pos1adr, setpoint1);
-    EEPROM.put(pos2adr, setpoint2);
-  }
-  EEPROM.put(SERNUM,  serialnumber);
-  EEPROM.put(VERNUM,  version);
-  EEPROM.put(EEPCNT,  eepromcnt);    
-}
-
-void retrieve_from_eeprom() {
-
-  // indien -1, default waarde nemen
-  EEPROM.get(Pval1adr, pval1);
-  EEPROM.get(Ival1adr, ival1);
-  EEPROM.get(Dval1adr, dval1);
-  EEPROM.get(Pval2adr, pval2);
-  EEPROM.get(Ival2adr, ival2);
-  EEPROM.get(Dval2adr, dval2);
-
-  EEPROM.get(pos1adr, encoder1);
-  EEPROM.get(pos2adr, encoder2);
-
-  EEPROM.get(SERNUM,  serialnumber);
-  EEPROM.get(VERNUM,  version);
-  EEPROM.get(EEPCNT,  eepromcnt);    
-}
 
 // encoder event interrupts
 void encoder1Event() {
