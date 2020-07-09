@@ -31,9 +31,10 @@ public class MainActivity extends BlunoLibrary {
     private static String all = " ";
     private int lpos = 0;
     private int rpos = 0;
-    private int oldlpos = -1;
-    private int oldrpos = -1;
-
+    private int oldlpos = -10;
+    private int oldrpos = -10;
+    SeekBar seekBar1 = findViewById(R.id.seekBar1);
+    SeekBar seekBar2 = findViewById(R.id.seekBar2);
     boolean initpos = true;
 
     @Override
@@ -83,13 +84,12 @@ public class MainActivity extends BlunoLibrary {
             }
         });
 
-        SeekBar seekBar1 = findViewById(R.id.seekBar1);
         seekBar1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                textseekb1.setText("L " + i);
-                lpos = i;
-                // serialSend("pl"+i+"\r");
+                lpos = i - 5;
+                textseekb1.setText("L " + lpos);
+                // serialSend("pl"+ lpos +"\r");
             }
 
             @Override
@@ -102,13 +102,14 @@ public class MainActivity extends BlunoLibrary {
 
             }
         });
-        SeekBar seekBar2 = findViewById(R.id.seekBar2);
+
         seekBar2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                textseekb2.setText("R " + i);
+                rpos = i - 5;
+                textseekb2.setText("R " + rpos);
                 rpos = i;
-                // serialSend("pr"+i+"\r");
+                // serialSend("pr"+rpos+"\r");
             }
 
             @Override
@@ -222,25 +223,32 @@ public class MainActivity extends BlunoLibrary {
         if (initpos) {
             // lees Enc: i,j X
             if (all.indexOf('X') > 0) {
-                // should contain: Enc: x,yX
+                // should contain: Enc: x,y,vX
                 temp = all.replace("Enc: ", "");
                 String tempp = temp.replace("X", "");
                 tempp = tempp.replaceAll("\\s+", "");
                 String[] temp2 = tempp.split(",");
-                int l = (Integer.parseInt(temp2[0])+125)/2000;
-                int r = (Integer.parseInt(temp2[1])+125)/2000;
+                int lpos = (Integer.parseInt(temp2[0])+125)/2000;
+                int rpos = (Integer.parseInt(temp2[1])+125)/2000;
+                // test for <-5 or >5 ?
+                // set seekbars!
+                seekBar1.setProgress(lpos+5);
+                seekBar2.setProgress(rpos+5);
+
+                textseekb1.setText("L " + lpos);
+                textseekb2.setText("R " + rpos);
+
                 float v = (float)(Integer.parseInt(temp2[2]))/1000;
                 if (v <= 10.2) {
                     accubutton.setTextColor(Color.RED);
                 } else {
                     accubutton.setTextColor(Color.GREEN);
                 }
-                textseekb1.setText("L " + l);
-                textseekb2.setText("R " + r);
-                initpos = false;
-                execbutton.setText("Execute");
                 String sp = String.format("%.1f Volt", v);
                 accubutton.setText(sp);
+
+                initpos = false;
+                execbutton.setText("Execute");
             }
         }
 

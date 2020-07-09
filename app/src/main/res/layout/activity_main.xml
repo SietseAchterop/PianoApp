@@ -86,7 +86,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="30dp"
         android:max="10"
-        android:progress="3" />
+        android:progress="5" />
 
     <TextView
         android:id="@+id/textseekb1"
@@ -111,7 +111,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="30dp"
         android:max="10"
-        android:progress="3" />
+        android:progress="5" />
 
     <TextView
         android:id="@+id/textseekb2"
