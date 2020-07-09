@@ -40,12 +40,12 @@ Adafruit_DCMotor *motorR = AFMS.getMotor(2);
   factor: z*x/y
   bv: 0,5 * 1000 / 2 = 250
 */
-#define GEAR 250
+#define GEAR 2000
 
 // arduino ledje
 #define  ledje 13
 
-byte speed1 = 0, speed2 = 0;    // intended motor speed
+int speed1 = 0, speed2 = 0;    // intended motor speed
 byte received           = 0;    // # of characters received
 volatile int encoder1, oldenc1, encoder2, oldenc2;
 volatile int corr1, corr2, setp1, setp2;
@@ -63,7 +63,7 @@ byte control  = 0;
 struct SavedData {
   unsigned int pval1, ival1, dval1, pval2, ival2, dval2;
   int setpoint1, setpoint2;
-  unsigned int serialnumber, version, eepromcnt;
+  unsigned int serialnumber, version, eepromcnt, accucal;
 };
 
   SavedData mydata;
@@ -78,6 +78,9 @@ void myEEPROMput(void) {
 #define Pdefault 5
 #define Idefault 0
 #define Ddefault 2
+
+// default for accu calibration
+#define ACCUCAL 130
 
 //
 byte comavail  = 0;   // a command is read
@@ -146,7 +149,7 @@ void setup()
     mydata.pval1 = Pdefault; mydata.ival1 = Idefault; mydata.dval1 = Ddefault;
     mydata.pval2 = Pdefault; mydata.ival2 = Idefault; mydata.dval2 = Ddefault;
     mydata.setpoint1 = 0; mydata.setpoint2 = 0;
-    mydata.serialnumber = SERIAL; mydata.version = VERSION; mydata.eepromcnt = 0;
+    mydata.serialnumber = SERIAL; mydata.version = VERSION; mydata.eepromcnt = 0; mydata.accucal = ACCUCAL;
     EEPROM.put(0, mydata);
   } else {
     encoder1 = mydata.setpoint1;
@@ -228,9 +231,14 @@ void timer1_int(void)        // interrupt service routine
 }
 
 
+// to measure accu voltage in millivolt
+int accu() {
+  return (mydata.accucal * analogRead(A0))/10;
+}
+
 void loop()
 {
-  int spp;
+  int spp, i;
 
   // Default response
   sprintf(printstr, "ack\n\r");
@@ -276,7 +284,7 @@ void loop()
 
     switch (command[0]) {
     case 'i':                   // return info
-      sprintf(printstr, "Info: %d, %d, ", control, timesw);
+      sprintf(printstr, "Info: %d, %d, ", accu(), timesw);
       Serial.print(printstr);
       sprintf(printstr, "SP:   %d, %d, ", mydata.setpoint1, mydata.setpoint2);
       Serial.print(printstr);
@@ -319,7 +327,7 @@ void loop()
       }
       break;
     case 'e':               // return encoder values
-      sprintf(printstr, "Enc: %d, %dX\n\r", encoder1, encoder2);
+      sprintf(printstr, "Enc: %d, %d, %dX\n\r", encoder1, encoder2, accu());
       break;
     case 'P':               // P value  (-1 to reset eeprom values)
       if (!mot)
@@ -338,6 +346,10 @@ void loop()
 	mydata.dval1 = atoi(command+2);
       else
 	mydata.dval2 = atoi(command+2);
+      break;
+    case 'C':               // acccal value
+      mydata.accucal = atoi(command+1);
+      myEEPROMput();
       break;
     case 'm':               //  set setpoint
       timer1_counter = 0;
@@ -411,8 +423,8 @@ void loop()
   case 1:
     control = 0;   // no controlling now
     timer1_counter = 0;
-    motorL_speed(-spp);
-    motorR_speed(-spp);
+    motorL_speed(spp);
+    motorR_speed(spp);
     comm = 2;
     break;
   case 2:
@@ -486,15 +498,15 @@ void loop()
       }
     }
     break;
-  case 6: // both, move a bit out of the stop
-    mydata.setpoint1 = encoder1 + 100;
-    mydata.setpoint2 = encoder2 + 100;
+  case 6: // both, move to center of range
+    mydata.setpoint1 = encoder1 - 10000;
+    mydata.setpoint2 = encoder2 - 10000;
     control = 1;
     timer1_counter = 0;
     comm = 7;
     break;
   case 7:
-    if (timer1_counter > 30) {
+    if (timer1_counter > 2000) {
       motors_stop();
       // update variables
       mydata.setpoint1 = 0;
@@ -558,15 +570,15 @@ void loop()
 void encoder1Event() {
   if (digitalRead(m_ena1) == HIGH) {
     if (digitalRead(m_ena2) == LOW) {
-      encoder1++;
-    } else {
       encoder1--;
+    } else {
+      encoder1++;
     }
   } else {
     if (digitalRead(m_ena2) == LOW) {
-      encoder1--;
-    } else {
       encoder1++;
+    } else {
+      encoder1--;
     }
   }
 }
@@ -574,15 +586,15 @@ void encoder1Event() {
 void encoder2Event() {
   if (digitalRead(m_enb1) == HIGH) {
     if (digitalRead(m_enb2) == LOW) {
-      encoder2++;
-    } else {
       encoder2--;
+    } else {
+      encoder2++;
     }
   } else {
     if (digitalRead(m_enb2) == LOW) {
-      encoder2--;
-    } else {
       encoder2++;
+    } else {
+      encoder2--;
     }
   }
 }

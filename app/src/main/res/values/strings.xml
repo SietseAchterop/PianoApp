@@ -6,7 +6,7 @@
     <string name="label_device_address">Device address:</string>
     <string name="label_state">State:</string>
     <string name="no_data">No data</string>
-    <string name="connected">Connected</string>
+    <string name="connected">Conn</string>
     <string name="disconnected">Disconnected</string>
     <string name="title_devices">BLE Device Scan</string>
     <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
@@ -26,4 +26,5 @@
     <string name="calibrate">Calibrate</string>
     <string name="execute">Execute</string>
     <string name="initexecute">Get position</string>
+    <string name="accu"></string>
 </resources>

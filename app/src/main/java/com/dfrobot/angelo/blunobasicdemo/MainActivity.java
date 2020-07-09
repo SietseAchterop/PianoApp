@@ -5,6 +5,7 @@ package com.dfrobot.angelo.blunobasicdemo;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.content.Intent;
 import android.support.v4.app.ActivityCompat;
@@ -25,6 +26,7 @@ public class MainActivity extends BlunoLibrary {
     private TextView textseekb1;
     private TextView textseekb2;
     private Button execbutton;
+    private Button accubutton;
 
     private static String all = " ";
     private int lpos = 0;
@@ -123,6 +125,7 @@ public class MainActivity extends BlunoLibrary {
         textseekb2 = findViewById(R.id.textseekb2);
 
         execbutton = findViewById(R.id.execbutton);
+        accubutton = findViewById(R.id.accubutton);
 
 
     }
@@ -172,6 +175,8 @@ public class MainActivity extends BlunoLibrary {
     @Override
     protected void onPause() {
         super.onPause();
+        //initpos = true;
+        //execbutton.setText("Get Position");
         onPauseProcess();
     }
 
@@ -222,12 +227,20 @@ public class MainActivity extends BlunoLibrary {
                 String tempp = temp.replace("X", "");
                 tempp = tempp.replaceAll("\\s+", "");
                 String[] temp2 = tempp.split(",");
-                int l = (Integer.parseInt(temp2[0])+125)/250;
-                int r = (Integer.parseInt(temp2[1])+125)/250;
+                int l = (Integer.parseInt(temp2[0])+125)/2000;
+                int r = (Integer.parseInt(temp2[1])+125)/2000;
+                float v = (float)(Integer.parseInt(temp2[2]))/1000;
+                if (v <= 10.2) {
+                    accubutton.setTextColor(Color.RED);
+                } else {
+                    accubutton.setTextColor(Color.GREEN);
+                }
                 textseekb1.setText("L " + l);
                 textseekb2.setText("R " + r);
                 initpos = false;
                 execbutton.setText("Execute");
+                String sp = String.format("%.1f Volt", v);
+                accubutton.setText(sp);
             }
         }
 
