@@ -33,8 +33,8 @@ public class MainActivity extends BlunoLibrary {
     private int rpos = 0;
     private int oldlpos = -10;
     private int oldrpos = -10;
-    SeekBar seekBar1 = findViewById(R.id.seekBar1);
-    SeekBar seekBar2 = findViewById(R.id.seekBar2);
+    SeekBar seekBar1;
+    SeekBar seekBar2;
     boolean initpos = true;
 
     @Override
@@ -84,6 +84,8 @@ public class MainActivity extends BlunoLibrary {
             }
         });
 
+        seekBar1 = findViewById(R.id.seekBar1);
+        seekBar2 = findViewById(R.id.seekBar2);
         seekBar1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -108,7 +110,6 @@ public class MainActivity extends BlunoLibrary {
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 rpos = i - 5;
                 textseekb2.setText("R " + rpos);
-                rpos = i;
                 // serialSend("pr"+rpos+"\r");
             }
 
@@ -144,6 +145,7 @@ public class MainActivity extends BlunoLibrary {
             serialSend("e\r");
         } else {
             //Log.w("YYYY", "all " + all);
+            // ook als er geen verandereing is? Robuster?
             if (lpos != oldlpos) {
                 serialSend("pl" + lpos + "\r");
                 oldlpos = lpos;
@@ -228,6 +230,7 @@ public class MainActivity extends BlunoLibrary {
                 String tempp = temp.replace("X", "");
                 tempp = tempp.replaceAll("\\s+", "");
                 String[] temp2 = tempp.split(",");
+                System.out.println("INIT" + temp2[0] + ", " + temp2[1] + ", " + temp2[2]);
                 int lpos = (Integer.parseInt(temp2[0])+125)/2000;
                 int rpos = (Integer.parseInt(temp2[1])+125)/2000;
                 // test for <-5 or >5 ?
