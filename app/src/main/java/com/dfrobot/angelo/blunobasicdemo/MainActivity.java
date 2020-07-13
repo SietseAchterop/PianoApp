@@ -133,7 +133,7 @@ public class MainActivity extends BlunoLibrary {
     }
 
     public void calclick(View view) {
-        serialSend("q100" + "\r");
+        serialSend("q150" + "\r");
     }
 
 
@@ -242,7 +242,7 @@ public class MainActivity extends BlunoLibrary {
                 textseekb2.setText("R " + rpos);
 
                 float v = (float)(Integer.parseInt(temp2[2]))/1000;
-                if (v <= 10.2) {
+                if (v <= 10.4) {
                     accubutton.setTextColor(Color.RED);
                 } else {
                     accubutton.setTextColor(Color.GREEN);

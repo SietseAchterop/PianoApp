@@ -499,8 +499,8 @@ void loop()
     }
     break;
   case 6: // both, move to center of range
-    mydata.setpoint1 = encoder1 - 10000;
-    mydata.setpoint2 = encoder2 - 10000;
+    mydata.setpoint1 = encoder1 - 10200;
+    mydata.setpoint2 = encoder2 - 10200;
     control = 1;
     timer1_counter = 0;
     comm = 7;
