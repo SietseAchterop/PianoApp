@@ -25,6 +25,5 @@
     <string name="data_sending_area">Data sending area</string>
     <string name="calibrate">Calibrate</string>
     <string name="execute">Execute</string>
-    <string name="initexecute">Get position</string>
     <string name="accu"></string>
 </resources>

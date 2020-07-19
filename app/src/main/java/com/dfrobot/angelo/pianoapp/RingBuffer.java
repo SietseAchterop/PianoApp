@@ -1,4 +1,4 @@
-package com.dfrobot.angelo.blunobasicdemo;
+package com.dfrobot.angelo.pianoapp;
 
 @SuppressWarnings("unchecked")
 public class RingBuffer<T> {

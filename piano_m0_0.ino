@@ -193,8 +193,8 @@ void timer1_int(void)        // interrupt service routine
   else { // new position every second
     if (timer1_counter%100 == 0) {
       digitalWrite(ledje, !digitalRead(ledje));
-      setp1 = GEAR*random(0,20);
-      setp2 = GEAR*random(0,20);
+      setp1 = GEAR*random(-5, 6);
+      setp2 = GEAR*random(-5, 6);
       timesw--;
       if (timesw == 0) {
 	motors_stop();
@@ -240,8 +240,8 @@ void loop()
 {
   int spp, i;
 
-  // Default response
-  sprintf(printstr, "ack\n\r");
+  // Default response is no response
+  sprintf(printstr, "");
 
   // read a line
   if(Serial.available() > 0) 
@@ -284,11 +284,11 @@ void loop()
 
     switch (command[0]) {
     case 'i':                   // return info
-      sprintf(printstr, "Info: %d, %d, ", accu(), timesw);
+      sprintf(printstr, "Info: %d, %d\n\r", accu(), timesw);
       Serial.print(printstr);
-      sprintf(printstr, "SP:   %d, %d, ", mydata.setpoint1, mydata.setpoint2);
+      sprintf(printstr, "SP:   %d, %d\n\r", mydata.setpoint1, mydata.setpoint2);
       Serial.print(printstr);
-      sprintf(printstr, "ENC:  %d,   %d\n\r", encoder1, encoder2);
+      sprintf(printstr, "Enc: %d, %dX\n\r", encoder1, encoder2);
       comm = 11;   // to stop calibration and motor
       break;
     case 'J' :
@@ -327,7 +327,9 @@ void loop()
       }
       break;
     case 'e':               // return encoder values
-      sprintf(printstr, "Enc: %d, %d, %dX\n\r", encoder1, encoder2, accu());
+      sprintf(printstr, "Enc: %d, %dX\n\r", encoder1, encoder2);
+      Serial.print(printstr);
+      sprintf(printstr, "V: %d\n\r", accu());
       break;
     case 'P':               // P value  (-1 to reset eeprom values)
       if (!mot)
@@ -346,10 +348,6 @@ void loop()
 	mydata.dval1 = atoi(command+2);
       else
 	mydata.dval2 = atoi(command+2);
-      break;
-    case 'C':               // acccal value
-      mydata.accucal = atoi(command+1);
-      myEEPROMput();
       break;
     case 'm':               //  set setpoint
       timer1_counter = 0;
@@ -408,8 +406,9 @@ void loop()
       sprintf(printstr, "NACK\n\r");
       break;
     }
-    // evt. alleen print indien ongelijk aan "ack"
-    Serial.print(printstr);
+    // print response
+    if (printstr != "")
+      Serial.print(printstr);
     // prepare for next command
     comavail = 0;
     comind = 0;
@@ -551,7 +550,13 @@ void loop()
     break;
   case 3:
     if (timer1_counter > 20) {
+      // reached intended position
       motors_stop();
+      myEEPROMput();
+      sprintf(printstr, "Enc: %d, %dX\n\r", encoder1, encoder2);
+      Serial.print(printstr);
+      sprintf(printstr, "V: %d\n\r", accu());
+      Serial.print(printstr);
     }
     break;
   default:
