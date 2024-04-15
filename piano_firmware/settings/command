@@ -4,4 +4,4 @@
 nrfutil settings generate --family NRF52840 --application  nrf52840_xxaa.hex --application-version 1 --bootloader-version 1 --bl-settings-version 2 settings.hex
 
 # create uart_dfu_1.zip
-nrfutil pkg generate --hw-version 52 --sd-req 0x100 --application-version 1 --application nrf52840_xxaa.hex --key-file ../../piano_private.pem piano_app_0.zip
+nrfutil pkg generate --hw-version 52 --sd-req 0x100 --application-version 1 --application nrf52840_xxaa.hex --key-file /home/sietse/Radio/Piano/Firmware/piano_private.pem piano_app_0.zip
