@@ -32,5 +32,18 @@ google-services.json
 # Android Profiling
 *.hprof
 
+
+
 # Nordic SDK build
-/piano_firmware/pca10056/s140/armgcc/_build/
+/piano_firmware/**/_build/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
