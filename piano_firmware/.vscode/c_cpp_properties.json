@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/home/sietse/Radio/Software/Nordic/nRF5_SDK_17.1.0_ddde560/**"
+            ],
+            "defines": [],
+            "compilerPath": "/home/sietse/Software/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi/bin/arm-none-eabi-gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-clang-arm"
+        }
+    ],
+    "version": 4
+}

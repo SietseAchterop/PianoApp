@@ -1,0 +1,34 @@
+
+Commando's
+
+xya
+xya,b
+  x: commando
+  y: motor left or right (l or not-l)
+  a: par1
+  b: par2
+     a and b : integer
+
+i        :    info
+mmx,y    :    set setpoints (small steps)
+pmx,y    :    set setpoints
+smx      :    set motor speed of a motor
+e        :    print corrections, eepromcnt
+f        :    print PID values from eeprom
+X        :    init eeprom data
+Y        :    zero encoders
+E        :    print error, save data in eeprom
+F        :    save data in eeprom
+Sms      :    set serial number and passkey
+Z        :    print data collected after command c
+r        :    init array tijden.
+Pmx,y    :    set P values
+Imx,y    :    set I values
+Dmx,y    :    set D values
+Amx      :    (L) set accuval, (R) get accuval
+Tmx      :    test motors. move motor randomly x times
+C        :    Calibrate motors (go to end stops)
+## testing
+tm       :    start (L) of stop (R) timer
+qm       :    start (L) if stop (R) motor/encoder
+cm       :    control on (L) and off (R)
