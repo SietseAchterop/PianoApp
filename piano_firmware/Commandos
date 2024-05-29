@@ -9,12 +9,17 @@ xya,b
   b: par2
      a and b : integer
 
-i        :    info
+i        :    info, prints:
+	        PApp: bat, encoder1, encoder2
+		 bat: battery voltage or 100 to indicate error.
+		 When 100 reset device
 mmx,y    :    set setpoints (small steps)
 pmx,y    :    set setpoints
 smx      :    set motor speed of a motor
-e        :    print corrections, eepromcnt
-f        :    print PID values from eeprom
+e        :    print corrections, eepromcnt, stepsdone
+f        :    print PID values
+g        :    print serialnumber, version, gearvalue
+Gmg      :    set gearvalue g
 X        :    init eeprom data
 Y        :    zero encoders
 E        :    print error, save data in eeprom

@@ -36,7 +36,7 @@ bool onhold = false;
 struct SavedData {
   unsigned int pval1, ival1, dval1, pval2, ival2, dval2;
   int setpoint1, setpoint2;
-  unsigned int serialnumber, version, eepromcnt, accucal, stepsdone;
+  unsigned int serialnumber, version, eepromcnt, accucal, stepsdone, gear;
 };
 // default for accu calibration:   ACCUCAL/10^7 * 2^14 = 8 Volt
 #define ACCUCAL 5400
@@ -127,7 +127,8 @@ volatile uint32_t upp=0, downn=0;
   factor: z*x/y
   bv: 0,5 * 1000 / 2 = 250
 */
-#define GEAR 8300
+#define GEARVALUE 8300
+
 // default PID values
 #define Pdefault 4
 #define Idefault 0
@@ -159,6 +160,7 @@ void set_mydata(void) {
   mydata.version = VERSION;
   mydata.eepromcnt = 1; mydata.accucal = ACCUCAL;
   mydata.stepsdone = 0;
+  mydata.gear = GEARVALUE;
   fstore_mydata();
 }
 
@@ -173,7 +175,6 @@ void mydata_init(void) {
     sprintf(serial, "%d", mydata.serialnumber);
     strncpy(name+9,serial, 3);
     strncpy(((char *)passkey)+3, serial, 3);
-
   }
 }
 
@@ -227,8 +228,8 @@ char * process(char * command)
     timer_start();
     break;
   case 'p':               //  set setpoints:  bijv. pp2,3
-    mydata.setpoint1 = GEAR*par1;
-    mydata.setpoint2 = GEAR*par2;
+    mydata.setpoint1 = mydata.gear*par1;
+    mydata.setpoint2 = mydata.gear*par2;
     state = 0;
     curTask = Final;
     control = 1;
@@ -245,15 +246,15 @@ char * process(char * command)
     if (speed1 == 0 && speed2 == 0) encmotor(false);
     break;
   case 'e' :
-    sprintf(response, "Corr: %d, %d, %d, %d", corr1, corr2, mydata.eepromcnt, mydata.stepsdone);
+    sprintf(response, "Corr: %d, %d, ee: %d, st: %d", corr1, corr2, mydata.eepromcnt, mydata.stepsdone);
     break;
-  case 'f':                   // print PID values from flash.
-    sprintf(response, "PID1: %lx, %lx, %lx", mydatapage[0], mydatapage[1], mydatapage[2]);
+  case 'f':                   // print PID values
+    sprintf(response, "PID1: %d, %d, %d", mydata.pval1, mydata.ival1, mydata.dval1);
     send_back(response);
-    sprintf(response, "PID2: %lx, %lx, %lx", mydatapage[3], mydatapage[4], mydatapage[5]);
+    sprintf(response, "PID2: %d, %d, %d", mydata.pval2, mydata.ival2, mydata.dval2);
     break;
   case 'g':                   // print mydata
-    sprintf(response, "mydata: %x, %x, %x, %x", mydata.pval1, mydata.ival1, mydata.dval1, mydata.pval2);
+    sprintf(response, "serial: %d, version: %d, gear: %d", mydata.serialnumber, mydata.version, mydata.gear);
     break;
   case 'X':
     sprintf(response, "Init mydata.");
@@ -268,7 +269,6 @@ char * process(char * command)
     }
     tellertje = 0;
     upp=0; downn=0;
-    
     break;
   case 'E':                   // error in positioning
     error = 1;
@@ -289,6 +289,15 @@ char * process(char * command)
     sprintf(response, "new passkey: 100%d", par1);
     fstore_mydata();
     // new name and passkey will be picked at next reboot.
+    break;
+  case 'G':                   // set new gear value
+    if (par1 < 1 || par1 > 100000) {
+      sprintf(response, "Ignored!");
+      break;
+    }
+    mydata.gear = par1;
+    sprintf(response, "new gear value: %d", par1);
+    fstore_mydata();
     break;
   case 'Z':
     for (uint32_t i=0; i<500; i++) {
@@ -546,10 +555,10 @@ void calibrate(void) {
     break;
   case 5:
     // Both at the stop, now move back one step.
-    // We now are at 5*GEAR + 500 and need to go to current
+    // We now are at 5*gear + 500 and need to go to current
     //
-    encoder1 = 5*GEAR + 2000;
-    encoder2 = 5*GEAR + 2000;
+    encoder1 = 5*mydata.gear + 2000;
+    encoder2 = 5*mydata.gear + 2000;
     mydata.setpoint1 = current1;
     mydata.setpoint2 = current2;
     //    sprintf(response, "CAL done: %d, %d", encoder1, encoder2);
@@ -654,7 +663,7 @@ void final(void) {
 // random setpoint
 uint32_t random(void) {
   char response[30];
-  int willekeurig = GEAR*(rand()%12 - 6);
+  int willekeurig = mydata.gear*(rand()%12 - 6);
   sprintf(response, "rand %d", willekeurig);
   send_back(response);
   return willekeurig;
