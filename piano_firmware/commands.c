@@ -2,6 +2,13 @@
 
 Included in main.c
 
+Motors met verschillende vertragingen:
+het aantal tandwieltjes varieert en daarmee de richting waarin de motor draait!
+Evt aanpassingen nodig:
+ encoder_Event:   ++ en -- verwisselen
+ control loop:    corr1 en corr2 minteken erbij of af
+ calibreren       CALSPEED met of zonder minteken
+
 *******/
 
 #define VERSION 0
@@ -120,14 +127,14 @@ volatile uint32_t upp=0, downn=0;
   factor: z*x/y
   bv: 0,5 * 1000 / 2 = 250
 */
-#define GEAR 2000
+#define GEAR 8300
 // default PID values
 #define Pdefault 4
 #define Idefault 0
 #define Ddefault 1
 
 // goto error state when reached
-#define TIMEOUT 2000
+#define TIMEOUT 4000
 
 void timer_start(void) {
   uint32_t err_code;
@@ -170,7 +177,6 @@ void mydata_init(void) {
   }
 }
 
-
 /**
 Process commands.
 
@@ -202,7 +208,7 @@ char * process(char * command)
   }
   
   // default response
-  sprintf(response, "PApp: %.2f %d %d", battery, encoder1, encoder2);
+  sprintf(response, "PApp default: %.2f %d %d", battery, encoder1, encoder2);
 
   if (onhold) return response;
 
@@ -211,7 +217,6 @@ char * process(char * command)
     NRF_LOG_INFO("--> Command: i");
     //sprintf(response, "PApp: %.2f %d %d, %ld %ld", battery, encoder1, encoder2, upp, downn);
     sprintf(response, "PApp: %.2f %d %d", battery, encoder1, encoder2);
-
     break;
   case 'm':               //  set setpoints (small steps)
     mydata.setpoint1 = par1;
@@ -454,7 +459,7 @@ motor naar eindstop
 
  *******/
 
-#define CALSPEED  100
+#define CALSPEED  -70
 
 // "position" before calibration
 int current1, current2;
@@ -462,14 +467,13 @@ int current1, current2;
 // start calibrate with state = 0
 void calibrate(void) {
   char command[4];
-
+  
   switch (state) {
   case 0:
     timer_counter = 0;
     // remember where we are supposed to be
     current1 = mydata.setpoint1;
     current2 = mydata.setpoint1;
-
     motorAB_speed(CALSPEED, CALSPEED);
     // print vanuit interrupt?
     //sprintf(response, "CAL start: %d, %d", encoder1, encoder2);
@@ -493,11 +497,12 @@ void calibrate(void) {
         break;
       }
       // test if there is any movement
-      if ((abs(calenc1 - encoder1) < 10)) {
+      if ((abs(calenc1 - encoder1) < 500)) {
+	// we assume motorL is at stop
         motorAB_speed(0, CALSPEED);
         state = 3;
       }
-      if ((abs(calenc2 - encoder2) < 10)) {
+      if ((abs(calenc2 - encoder2) < 500)) {
         if (state == 3) {
           motorAB_speed(0, 0);
           state = 5;
@@ -518,7 +523,7 @@ void calibrate(void) {
         state = 10;
         break;
       }
-      if ((abs(calenc2 - encoder2) < 10)) {
+      if ((abs(calenc2 - encoder2) < 500)) {
         motorAB_speed(0, 0);
         state = 5;
       }
@@ -532,7 +537,7 @@ void calibrate(void) {
         state = 10;
         break;
       }
-      if ((abs(calenc1 - encoder1) < 10)) {
+      if ((abs(calenc1 - encoder1) < 500)) {
         motorAB_speed(0, 0);
         state = 5;
       }
@@ -541,45 +546,24 @@ void calibrate(void) {
     break;
   case 5:
     // Both at the stop, now move back one step.
-    // We now are at 5*GEAR + 2000 and need to go to current
+    // We now are at 5*GEAR + 500 and need to go to current
     //
     encoder1 = 5*GEAR + 2000;
     encoder2 = 5*GEAR + 2000;
     mydata.setpoint1 = current1;
     mydata.setpoint2 = current2;
-
     //    sprintf(response, "CAL done: %d, %d", encoder1, encoder2);
     //    send_back(response);
 
-    control = 1;
-    timer_counter = 0;
     state = 6;
     break;
   case 6:
-    // wait until we are almost there
-    if ( ((abs(mydata.setpoint1 - encoder1) < 1000) && (abs(mydata.setpoint2 - encoder2) < 1000)) ) {
-      state = 7;
-    }
-    // if no motors attached
-    if (timer_counter >  TIMEOUT) {
-      state = 10;
-      break;
-    }
-
-    break;
-  case 7:
-    if (timer_counter > 300) {
-      motors_stop();
-      timer_stop();
-      // Save reached position in flash. Normally not needed
-      mydata.stepsdone = 0;
-      onhold = false;
-      strcpy(command, "F");
-      app_sched_event_put(&command, 2, my_scheduler_event_handler);
-      // remove error in GUI
-      error = 0;
-      curTask = None;
-    }
+    onhold = false;
+    // nu gewoon als een normaal commando afmaken.
+    state = 0;
+    curTask = Final;
+    control = 1;
+    timer_counter = 0;  // reset timeout
     break;
   case 10:   // Error
     motors_stop();
@@ -772,7 +756,7 @@ static void my_timer_handler(void * p_context)
   else
     speed = MAXSPEED;
   //
-  corr1 = -corr1/2;
+  corr1 = corr1/2;
   if (corr1 > speed) corr1 = speed;
   else if (corr1 < -speed) corr1 = -speed;
 
@@ -791,7 +775,7 @@ static void my_timer_handler(void * p_context)
   else
     speed = MAXSPEED;
   //
-  corr2 = -corr2/2;
+  corr2 = corr2/2;
   if (corr2 > speed) corr2 = speed;
   else if (corr2 < -speed) corr2 = -speed;
 
@@ -878,23 +862,23 @@ void encoder1Event(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
     upp++;
     //    nrf_gpio_pin_set(ARDUINO_A5_PIN);
     if (!nrf_gpio_pin_read(enca2)) {
-      encoder1--;
+      encoder1++;
       //      nrf_gpio_pin_clear(ARDUINO_1_PIN);
       //      nrf_gpio_pin_clear(ARDUINO_0_PIN);
     } else {
       //      nrf_gpio_pin_set(ARDUINO_1_PIN);
       //      nrf_gpio_pin_set(ARDUINO_0_PIN);
-      encoder1++;
+      encoder1--;
     }
   } else {
     downn++;
     //    nrf_gpio_pin_clear(ARDUINO_A5_PIN);
     if (!nrf_gpio_pin_read(enca2)) {
-      encoder1++;
+      encoder1--;
       //      nrf_gpio_pin_set(ARDUINO_1_PIN);
       //      nrf_gpio_pin_set(ARDUINO_1_PIN);
     } else {
-      encoder1--;
+      encoder1++;
       //      nrf_gpio_pin_clear(ARDUINO_1_PIN);
       //      nrf_gpio_pin_clear(ARDUINO_1_PIN);
     }
@@ -907,16 +891,16 @@ void encoder2Event(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
   if (nrf_drv_gpiote_in_is_set(encb1)) {
     //    nrf_gpio_pin_set(ARDUINO_A6_PIN);
     if (!nrf_gpio_pin_read(encb2)) {
-      encoder2--;
-    } else {
       encoder2++;
+    } else {
+      encoder2--;
     }
   } else {
     //    nrf_gpio_pin_clear(ARDUINO_A6_PIN);
     if (!nrf_gpio_pin_read(encb2)) {
-      encoder2++;
-    } else {
       encoder2--;
+    } else {
+      encoder2++;
     }
   }
 }

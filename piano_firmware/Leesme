@@ -1,0 +1,87 @@
+
+Firmware voor de Arduino-NANO-33
+    project afgeleid van (Nordic nRF5_SDK) examples/ble_peripheral/ble_app_uart
+    met custom_board.h
+    let ook op andere verschillen in pca10056
+=============================================
+
+- Nordic SDK: nRF5_SDK_17.1.0_ddde560 gebruikt voor maken.
+  - Zet compiler (nu ~/Software/gcc-arm-none-eabi-10.3-2021.10) goed in de SDK:
+        nRF5_SDK_17.0.2_d674dde/components/toolchain/gcc/Makefile.posix
+    
+- C-compiler: arm-none-eabi-gcc (15:12.2.rel1-1) 12.2.1 20221205
+
+- Nordic secure-bootloader moet er eerst op zodat we daarna de firmware er via bluetooth op kunnen zetten
+  Daarvoor moet de SWD interface gebruikt worden.
+  Omdat we de Arduino via een header monteren is er een speciaal tooltje gemaakt voor het eenmalige
+  programmeren.
+  MCU-Link van Embedded Artists wordt gebruik om via USB met de PC te verbinden.
+    (eerder met openocd)
+  Programmeren gaat via gdb-multiarch.
+
+- Maak binaries:
+   - ga naar pca10056/s140/armgcc  (product en compiler)
+        - make
+   - ga naar settings
+        - ./commands
+             maakt onderstaande files
+	- settings.hex
+	     voor programmeren via SWD
+	- piano_app_0.zip
+	     voor programmeren via Bluetooth
+
+- Programmeer eerste keer via SWD interface
+   - ga naar pca10056/s140/armgcc/_build
+   - gdb-multiarch nrf52832_xxaa.hex
+   - commando's:
+      tar ext :3333
+      mon nrf52.cpu curstate 
+      mon reset halt
+      mon flash erase_sector 0 0 last
+      mon flash erase_check 0
+
+      mon flash write_image /home/sietse/Radio/Software/Nordic/nRF5_SDK_17.1.0_ddde560/components/softdevice/s140/hex/s140_nrf52_7.2.0_softdevice.hex
+      mon flash write_image /home/sietse/nano-nordic/secure_bootloader/pca10056_s140_ble/armgcc/_build/nrf52840_xxaa_s140.hex
+      mon flash write_image /home/sietse/Radio/Piano/PianoApp/piano_firmware/pca10056/s140/armgcc/_build/nrf52840_xxaa.hex
+      mon flash write_image /home/sietse/Radio/Piano/PianoApp/piano_firmware/settings/settings.hex
+      mon reset run
+
+- Debugging via SWD interface
+   - vind adres
+       arm-none-eabi-nm nrf52840_xxaa.out|fgrep _SEGGER
+       20004f88 B _SEGGER_RTT
+   - dan iets van
+       mon nrf52.cpu rtt setup 0x20004f00 0x200 "SEGGER RTT"
+       mon nrf52.cpu rtt start
+       mon rtt server start 9090 0
+   - en dan
+       telnet localhost 9090
+
+- How do I disable control access port protection on nRF52 using openOCD?
+   zou niet nodig moeten zijn
+     mon nrf52.dap apreg 1 0x0C
+         (als dat 0 oplevert staat de protectie aan. 1 is ok)
+         (verse arduino nano heeft 1)
+     mon nrf52.dap apreg 1 0x04 0x01
+         (om protectie uit te zetten)
+   And then reset the device.
+
+
+- Programmeren via Bluetooth
+   - verbind P0.03 (pen 11) van Arduino met ground
+   - reset Arduino, of zet aan
+       dan verschijnt bluetooth DfuTarg device
+   - flash via DFU App van Nordic
+
+- Communiceren
+  - Android: APT-e App
+      Flutter app, moet eenvoudig op iPhone te zetten zijn
+  - Linux
+      python uart_service.py
+        uses bleak library
+
+
+===========
+#  BT le Toegang via linux
+#  hcitool lescan
+sudo setcap cap_net_raw+ep /usr/bin/hcitool

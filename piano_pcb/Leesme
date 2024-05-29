@@ -1,0 +1,31 @@
+
+PCB gemaakt met KiCad
+=====================
+
+Foutjes in bestaande ontwerp
+
+1. Highside switch FDN340P toegevoegd om encoder af te kunnen koppelen (led).
+   Hierdoor mogelijk af en toe een stapfoutje.
+   Zie het schema.
+
+2 aan/uit schakelaar moet er bij!
+  Als het uit staat moet opladen mogelijk zijn. Zou moeten kunnen met de lader.
+  Zie schema.
+
+3 zijn er betere plaatsen voor mountion holes?
+
+4 Zie verdere opmerkingen op schema.
+
+Speciale onderdelen
+===================
+  Adruino-Nano-33-ble
+     3.3 Volt jumper open zetten!
+  CN3302  module 2S 2A  aliexpress
+  li-ion  18650 cellen
+  houder accu  keystone   mouser
+  TB6612FNG
+  DIN6 printconnector Reichelt
+  N20 motor welke?
+     eerste  150rpm
+     later   50rpm (ongeveer, gemeten)
+       deze gebruiken we nu

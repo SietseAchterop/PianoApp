@@ -437,7 +437,7 @@
   )
 
   (text "hier schakelaar!\nladen moet werken bij off\nlet op verbruik bij R5/R6 en Hbrug."
-    (at 189.23 120.65 0)
+    (at 220.98 82.55 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 7760a75a-d74b-4185-b34e-cbc7b2c339b6)
   )
