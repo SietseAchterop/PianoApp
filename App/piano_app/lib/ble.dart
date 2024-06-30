@@ -77,7 +77,8 @@ class Bluetooth {
   void _disconnect() async {
     await _connection.cancel();
     _connected = false;
-    btButtonMessage = "Connect to ${settings.name}";
+//    btButtonMessage = "Connect to ${settings.name}";
+    btButtonMessage = "Connect to Piano";
     connDevice.value = false;
     debugPrint("===== _disconnect function called");
   }
@@ -159,7 +160,8 @@ class Bluetooth {
     debugPrint("=====  onConDev 2");
     _logTexts = "";
     refresh();
-    btButtonMessage = 'Disconnect from $deviceName';
+//    btButtonMessage = 'Disconnect from $deviceName';
+    btButtonMessage = 'Disconnect from Piano';
     _connection = _currentConnectionStream.listen((event) {
       var id = event.deviceId.toString();
       debugPrint("======   onConnectDevice event $deviceId  ====    $id");
@@ -221,7 +223,8 @@ class Bluetooth {
             _logTexts = "${_logTexts}Disconnected from $id\n";
             debugPrint(_logTexts);
             debugPrint("====== DISCONNECTED state");
-            btButtonMessage = "Connect to ${settings.name}";
+//            btButtonMessage = "Connect to ${settings.name}";
+            btButtonMessage = "Connect to Piano";
             _connected = false;
             connDevice.value = false;
             break;

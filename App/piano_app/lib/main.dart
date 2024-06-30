@@ -88,7 +88,8 @@ Future<Settings> readSettings() async {
     settings = Settings.fromJson(settingsMap);
     debugPrint("=====SET====   ${settingsMap.toString()}");
     if (settings.name != 'noName') {
-      btButtonMessage = 'Connect to ${settings.name}';
+      btButtonMessage = 'Connect to Piano';
+//      btButtonMessage = 'Connect to ${settings.name}';
       connDevice.value = !connDevice.value;
       connDevice.value = !connDevice.value;
     }
@@ -281,7 +282,8 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const ConfigPage()));
             },
-            child: const Text('Go to config screen'),
+//            child: const Text('Go to config screen'),
+            child: const Text('Go to Sliders'),
           ),
           ValueListenableBuilder(
             valueListenable: voltage,
@@ -293,7 +295,7 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(color: Colors.red))
                     : Text('Battery: ${voltage.value} Volt',
                         style: TextStyle(
-                            color: voltage.value > 6.3
+                            color: voltage.value > 7.0
                                 ? const Color.fromARGB(
                                     255, 22, 106, 161) // ad hoc
                                 : Colors.red)),
@@ -334,7 +336,8 @@ class _BTPageState extends State<BTPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Bluetooth settings')),
+//        title: const Center(child: Text('Bluetooth settings')),
+        title: const Center(child: Text('Information device')),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () async {
@@ -451,7 +454,8 @@ class _BTPageState extends State<BTPage> {
                     enabled: _connected,
                     controller: _dataToSendText,
                     decoration: const InputDecoration(
-                        border: InputBorder.none, hintText: 'Enter a string'),
+//                        border: InputBorder.none, hintText: 'Enter a string'),
+                        border: InputBorder.none, hintText: 'Enter command'),
                   )),
                   ElevatedButton(
                       onPressed: _connected ? bt.sendData : () {},
@@ -606,7 +610,8 @@ class _ConfigPageState extends State<ConfigPage> {
                       }
                     }
                   },
-                  child: const Text("Test")),
+//                  child: const Text("Test")),
+                  child: const Text("Move")),
             )
           ],
         ),
@@ -618,7 +623,8 @@ class _ConfigPageState extends State<ConfigPage> {
               child: TextField(
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Enter a new setting',
+//                  hintText: 'Enter a new setting',
+                  hintText: 'Name of new position',
                 ),
                 controller: configTextField,
                 onSubmitted: (String value) {
@@ -666,7 +672,8 @@ class _ConfigPageState extends State<ConfigPage> {
               Navigator.of(context).pop();
             },
           ),
-          title: const Center(child: Text('Configuration')),
+//          title: const Center(child: Text('Configuration')),
+          title: const Center(child: Text('Change Position')),
         ),
         body: SingleChildScrollView(
           child: ValueListenableBuilder(

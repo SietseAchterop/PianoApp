@@ -10,8 +10,8 @@ extern "C" {
 
 #include "nrf_gpio.h"
 
-// LEDs definitions for Nano 33 BLE
-#define LEDS_NUMBER    5
+// LEDs definitions for Nano 33 BLE (5, not used now, saves 0.6mA))
+#define LEDS_NUMBER    0
 
 #define LED_DL1         NRF_GPIO_PIN_MAP(1,9)
 #define LED_DL2         NRF_GPIO_PIN_MAP(0,13)
@@ -19,8 +19,6 @@ extern "C" {
 #define LED_DL3_RED     NRF_GPIO_PIN_MAP(0,24)
 #define LED_DL3_GRN     NRF_GPIO_PIN_MAP(0,16)
 #define LED_DL3_BLU     NRF_GPIO_PIN_MAP(0,6)
-#define LED_START       LED_DL1
-#define LED_STOP        LED_DL2
 
 #define LEDS_ACTIVE_STATE 1
 

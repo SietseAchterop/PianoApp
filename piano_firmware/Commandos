@@ -20,7 +20,7 @@ e        :    print corrections, eepromcnt, stepsdone
 f        :    print PID values
 g        :    print serialnumber, version, gearvalue
 Gmg      :    set gearvalue g
-X        :    init eeprom data
+X        :    init eeprom data  (after that, set accuval correct again)
 Y        :    zero encoders
 E        :    print error, save data in eeprom
 F        :    save data in eeprom
@@ -30,6 +30,7 @@ r        :    init array tijden.
 Pmx,y    :    set P values
 Imx,y    :    set I values
 Dmx,y    :    set D values
+
 Amx      :    (L) set accuval, (R) get accuval
 Tmx      :    test motors. move motor randomly x times
 C        :    Calibrate motors (go to end stops)

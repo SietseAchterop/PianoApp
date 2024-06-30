@@ -67,9 +67,9 @@ extern const uint32_t mydatapage[100];
    Note: enca and encb are interchanged in the schematics!!
          the error is in the schematic.
 ****/
-//#define stby      ARDUINO_12_PIN
-//#define encpower  ARDUINO_A4_PIN
+#define stby      ARDUINO_A4_PIN
 #define encpower  ARDUINO_12_PIN
+
 // MotorA (L)
 #define ain1 ARDUINO_6_PIN
 #define ain2 ARDUINO_5_PIN
@@ -228,13 +228,20 @@ char * process(char * command)
     timer_start();
     break;
   case 'p':               //  set setpoints:  bijv. pp2,3
-    mydata.setpoint1 = mydata.gear*par1;
-    mydata.setpoint2 = mydata.gear*par2;
-    state = 0;
-    curTask = Final;
-    control = 1;
-    timer_start();
-    mydata.stepsdone += 1;
+    if ((battery > 6.5) && (battery < 20)) {
+      mydata.setpoint1 = mydata.gear*par1;
+      mydata.setpoint2 = mydata.gear*par2;
+      state = 0;
+      curTask = Final;
+      control = 1;
+      timer_start();
+      mydata.stepsdone += 1;
+    }
+    else
+      if (battery > 20)
+	sprintf(response, "Error mode! Turn device off and then on.");
+      else
+	sprintf(response, "Battery voltage: %.2f. Charge battery!", battery);
     break;
   case 's' :              // test motors separately
     if (motL)
@@ -916,15 +923,18 @@ void encoder2Event(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
 
 // stby is met encpower niet meer nodig? (na testen de stby pin gebruiken?)
 // pullup weerstand 10K ->  10uA standby
+// Wel dus!
 // Interrupts moeten ook nog uit? hoewel na UIT en AAN is er niks veranderd. (in alle gevallen?)
 //   Dit zorgt wel voor fouten?
 //   Niveau gaat naar vaste 2 Volt. 1 of 0?
 void encmotor(bool on) {
   if (on) {
       nrf_gpio_pin_clear(encpower);
+      nrf_gpio_pin_set(stby);
     }
   else {
     nrf_gpio_pin_set(encpower);
+    nrf_gpio_pin_clear(stby);
   }
 }
 
@@ -941,6 +951,7 @@ static void gpio_init(void)
   nrf_gpio_pin_clear(PIN_ENABLE_I2C_PULLUP);
 
   nrf_gpio_cfg_output(encpower);
+  nrf_gpio_cfg_output(stby);
   nrf_gpio_cfg_output(ain1);
   nrf_gpio_cfg_output(ain2);
   nrf_gpio_cfg_output(pwma);
