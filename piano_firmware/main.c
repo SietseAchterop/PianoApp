@@ -11,7 +11,7 @@ Zie verder Leesme
 
 */
 
-// Lijkt alleen nodig voor vscode??
+// Lijkt alleen nodig voor vscode
 //#include <cstddef>
 
 #include <stdlib.h>

@@ -936,7 +936,7 @@
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid e4d2f565-25a0-48c6-be59-f4bf31ad2558)
   )
-  (text "Highside switch drain naar Vcc van H-brug, gate naar pin 30.\nLet op dat SWD conn Vcc krijgt."
+  (text "- Source naar 3.3V, drain alleen (!) naar beide DIN6-3.3V.\n  gate naar pin 30\n- R1 weg, notSTBY naar pin 8"
     (at 158.75 25.4 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid e5864fe6-2a71-47f0-90ce-38c3f8901580)

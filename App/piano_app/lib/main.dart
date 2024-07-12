@@ -123,7 +123,8 @@ int curRightPos = 0;
 // curPos in list
 int indexInList = -1;
 
-const double motorgear = 2000;
+// get value from i-command
+double motorgear = 8300;
 
 // settings.device is found during scanning
 bool found = false;
@@ -135,7 +136,8 @@ double spanning = 6.0;
 
 //  'Connect to ${settings.name}'
 //  'Connected to ${settings.name}'
-String btButtonMessage = 'Go to BT screen (long)';
+//String btButtonMessage = 'Go to BT screen (long)';
+String btButtonMessage = 'Press long';
 
 //BT
 Bluetooth bt = Bluetooth();
@@ -295,7 +297,7 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(color: Colors.red))
                     : Text('Battery: ${voltage.value} Volt',
                         style: TextStyle(
-                            color: voltage.value > 7.0
+                            color: voltage.value > 6.9
                                 ? const Color.fromARGB(
                                     255, 22, 106, 161) // ad hoc
                                 : Colors.red)),
@@ -440,7 +442,8 @@ class _BTPageState extends State<BTPage> {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.blue, width: 2)),
                 height: 90,
-                child: Text(_receivedData.join("\n"))),
+                child: SingleChildScrollView(
+                    child: Text(_receivedData.join("\n")))),
             const Text("Send message:"),
             Container(
                 margin: const EdgeInsets.all(3.0),
@@ -455,7 +458,8 @@ class _BTPageState extends State<BTPage> {
                     controller: _dataToSendText,
                     decoration: const InputDecoration(
 //                        border: InputBorder.none, hintText: 'Enter a string'),
-                        border: InputBorder.none, hintText: 'Enter command'),
+                        border: InputBorder.none,
+                        hintText: 'Enter command'),
                   )),
                   ElevatedButton(
                       onPressed: _connected ? bt.sendData : () {},
@@ -600,11 +604,12 @@ class _ConfigPageState extends State<ConfigPage> {
                                 "===== POSITION  in Test===    $indexInList");
                             // set list in homepage to this item??
                             currentSetting = indexInList;
-                            curLeftPos = leftPos.round();
-                            curRightPos = rightPos.round();
                             onPosition = true;
                           }
+                          curLeftPos = leftPos.round();
+                          curRightPos = rightPos.round();
                         });
+                        // trigger, wat ook al weer?
                         connDevice != connDevice;
                         connDevice != connDevice;
                       }

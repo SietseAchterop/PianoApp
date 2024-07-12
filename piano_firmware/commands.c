@@ -94,7 +94,7 @@ extern const uint32_t mydatapage[100];
 float battery = 8.0;
 // an error occured 0; no error, 1 error, 2 notified app
 int error = 0;
-volatile uint32_t timer_counter = 0, test_counter = 0, starttime = 0, tellertje = 0;
+volatile uint32_t timer_counter = 0, test_counter = 0, starttime = 0, tellertje = 0, secondes = 0;
 
 // motor controller
 uint8_t control  = 0;
@@ -209,7 +209,7 @@ char * process(char * command)
   }
   
   // default response
-  sprintf(response, "PApp default: %.2f %d %d", battery, encoder1, encoder2);
+  sprintf(response, "PApp default: %.2f %d %d %d %ld", battery, encoder1, encoder2, mydata.gear, secondes);
 
   if (onhold) return response;
 
@@ -217,7 +217,7 @@ char * process(char * command)
   case 'i':                   // return info
     NRF_LOG_INFO("--> Command: i");
     //sprintf(response, "PApp: %.2f %d %d, %ld %ld", battery, encoder1, encoder2, upp, downn);
-    sprintf(response, "PApp: %.2f %d %d", battery, encoder1, encoder2);
+    sprintf(response, "PApp: %.2f %d %d %d", battery, encoder1, encoder2, mydata.gear);
     break;
   case 'm':               //  set setpoints (small steps)
     mydata.setpoint1 = par1;
@@ -236,6 +236,7 @@ char * process(char * command)
       control = 1;
       timer_start();
       mydata.stepsdone += 1;
+      secondes = 0;
     }
     else
       if (battery > 20)
@@ -403,6 +404,8 @@ char * process(char * command)
       encoder1 = 0; encoder2 = 0;
       curTask = None;
     }
+    break;
+  default:
     break;
   }
 
@@ -833,6 +836,12 @@ static void battery_handler(void * p_context)
     UNUSED_PARAMETER(p_context);
 
     nrf_drv_saadc_sample();
+    secondes += 1;
+    // zet computertje uit na 24 uur geen pp commando
+    if (secondes > 24*60*60) sd_power_system_off();
+    // en bij heel lage spanning
+    if (battery < 6.0) sd_power_system_off();  
+  
 
     //    sprintf(response, "Battery: %.2f Volt", battery);
     //    NRF_LOG_INFO(" Battery %s", response);
@@ -1042,7 +1051,8 @@ void saadc_init(void)
 {
     ret_code_t err_code;
     nrf_saadc_channel_config_t channel_config =
-        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN5);
+      NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN5);
+    channel_config.acq_time = NRF_SAADC_ACQTIME_40US;
 
     err_code = nrf_drv_saadc_init(NULL, saadc_callback);
     APP_ERROR_CHECK(err_code);

@@ -10,9 +10,9 @@ xya,b
      a and b : integer
 
 i        :    info, prints:
-	        PApp: bat, encoder1, encoder2
+	        PApp: bat, encoder1, encoder2, gearvalue
 		 bat: battery voltage or 100 to indicate error.
-		 When 100 reset device
+                      When 100 reset device
 mmx,y    :    set setpoints (small steps)
 pmx,y    :    set setpoints
 smx      :    set motor speed of a motor
@@ -38,3 +38,4 @@ C        :    Calibrate motors (go to end stops)
 tm       :    start (L) of stop (R) timer
 qm       :    start (L) if stop (R) motor/encoder
 cm       :    control on (L) and off (R)
+Om       :    turn power off
