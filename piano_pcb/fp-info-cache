@@ -1,4 +1,4 @@
-20898784410217812
+20967619510991931
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -61151,6 +61151,181 @@ Mounting 4.5mm 9774100982
 0
 8
 1
+NANO33BLE_V2.0
+1X15-CASTELL
+<b>PIN HEADER</b>
+
+0
+15
+15
+NANO33BLE_V2.0
+2X03-TP1
+<b>PIN HEADER</b>
+
+0
+5
+5
+NANO33BLE_V2.0
+0402-1005X55N
+
+
+0
+2
+2
+NANO33BLE_V2.0
+0603-1608X90N
+
+
+0
+2
+2
+NANO33BLE_V2.0
+0805-R2013X50N
+
+
+0
+2
+2
+NANO33BLE_V2.0
+APDS9960
+
+
+0
+8
+8
+NANO33BLE_V2.0
+C&K_PTS820_NO_HOLES
+
+
+0
+6
+6
+NANO33BLE_V2.0
+FD-1-1.5
+
+
+0
+1
+1
+NANO33BLE_V2.0
+FRAME
+
+
+0
+0
+0
+NANO33BLE_V2.0
+HCLGA
+
+
+0
+8
+8
+NANO33BLE_V2.0
+HTS221
+
+
+0
+6
+6
+NANO33BLE_V2.0
+LEDC1608X80N-AK
+
+
+0
+2
+2
+NANO33BLE_V2.0
+LPS22H
+
+
+0
+10
+10
+NANO33BLE_V2.0
+LSM9DS1_TEMP_LGA24-8X4
+<h3>24-pin LGA 8x4 pins</h3>{return}<p>Footprint: 3.5 x 3mm</p>{return}<p>Used by:{return}<ul><li>LSM9DS1</li></ul></p>{return}<p><em>Unproven</em></p>
+
+0
+24
+24
+NANO33BLE_V2.0
+MPM3610
+
+
+0
+20
+20
+NANO33BLE_V2.0
+NINA-B3X
+
+
+0
+67
+67
+NANO33BLE_V2.0
+SJ
+<b>Solder jumper</b>
+
+0
+2
+2
+NANO33BLE_V2.0
+SMLP34RGB2W
+
+
+0
+4
+4
+NANO33BLE_V2.0
+SODFL3517X110N
+Small Outline Diode Flat Lead (SODFL); 2.60 mm L X 1.70 mm W X 1.10 mm H body<p><i>PCB Libraries Packages</i>
+
+0
+2
+2
+NANO33BLE_V2.0
+SON50P300X200X60-9N-EP160X140
+
+
+0
+9
+9
+NANO33BLE_V2.0
+SOT190P230X110-4N
+
+
+0
+4
+4
+NANO33BLE_V2.0
+TP-1.00MM
+
+
+0
+1
+1
+NANO33BLE_V2.0
+ZX62-AB-5PA
+
+
+0
+11
+11
+Nano_33
+NANO_33_Footprint_SMD_Castell
+Through hole straight socket strip, 1x15, 2.54mm pitch
+Through hole socket strip THT 1x15 2.54mm single row
+0
+30
+30
+Nano_33
+NANO_33_Socket_Castell
+Through hole straight socket strip, 1x15, 2.54mm pitch
+Through hole socket strip THT 1x15 2.54mm single row
+0
+90
+30
 NetTie
 NetTie-2_SMD_Pad0.5mm
 Net tie, 2 pin, 0.5mm square SMD pads
@@ -87526,4 +87701,137 @@ Varistor, V25S440P, https://www.littelfuse.com/media?resourcetype=datasheets&ite
 varistor
 0
 2
+2
+av
+Battery_2x_18650
+2x Li-ion battery holder
+
+0
+4
+4
+av
+CN3302-FP
+
+
+0
+4
+4
+av
+NANO_33_BLE
+Through hole straight socket strip, 1x15, 2.54mm pitch
+Through hole socket strip THT 1x15 2.54mm single row
+0
+62
+32
+av
+QFN-24-1EP_4x4mm_P0.5mm_EP2.7x2.7mm_ThermalVias
+QFN, 24 Pin (http://www.alfarzpp.lv/eng/sc/AS3330.pdf), generated with kicad-footprint-generator ipc_noLead_generator.py
+QFN NoLead
+0
+39
+25
+av
+SCART
+SCART socket, Tyco P/N 1483465-1
+
+0
+21
+21
+av
+SSOP-24_5.3x8.2mm_P0.65mm
+24-Lead Plastic Shrink Small Outline (SS)-5.30 mm Body [SSOP] (see Microchip Packaging Specification 00000049BS.pdf)
+SSOP 0.65
+0
+24
+24
+av
+din-5
+Din 5 (MIDI), Pro Signal P/N PSG03463
+
+0
+7
+6
+av
+din-6
+Din 5 (MIDI), Pro Signal P/N PSG03463
+
+0
+8
+8
+av
+din-6-1cm
+Din 5 (MIDI), Pro Signal P/N PSG03463
+
+0
+8
+8
+av
+jack_3.5_pj313d-smt
+3.5mm jack, HK RTL PJ313D
+
+0
+6
+3
+av
+jack_3.5_sj1-3513-smt
+3.5mm jack, CUI SJ1-3513-SMT
+
+0
+3
+3
+av
+jack_3.5_sj1-3514-smt
+3.5mm jack, CUI SJ1-3514-SMT
+
+0
+4
+4
+av
+jack_3.5_sj1-3515-smt
+3.5mm jack, CUI SJ1-3515-SMT
+
+0
+5
+5
+av
+jack_3.5_vert_lje0352-4r
+Vertical 3.5mm jack, Lih Sheng LJE0352-4R
+
+0
+4
+4
+av
+minidin-8
+MiniDin 8 (S-Video), Tyco P/N 1734096-1
+
+0
+11
+11
+av
+rca_black
+RCA Audio connector, black, Pro Signal p/n PSG01544
+rca, audio
+0
+3
+2
+av
+rca_red
+RCA Audio connector, red, Pro Signal p/n PSG01545
+rca, audio
+0
+3
+2
+av
+rca_white
+RCA Audio connector, white, Pro Signal p/n PSG01546
+rca, audio
+0
+3
+2
+av
+rca_yellow
+RCA Audio connector, yellow, Pro Signal p/n PSG01547
+rca, audio
+0
+3
 2
