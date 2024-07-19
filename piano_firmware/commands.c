@@ -13,6 +13,9 @@ Evt aanpassingen nodig:
 
 #define VERSION 0
 
+// set in main.c:  ble_evt_handler
+bool connected = false;
+
 // prototypes
 void send_back(char * message);
 void pwm_update_duty_cycle(uint8_t d_cycle1, uint8_t d_cycle2);
@@ -209,15 +212,13 @@ char * process(char * command)
   }
   
   // default response
-  sprintf(response, "PApp default: %.2f %d %d %d %ld", battery, encoder1, encoder2, mydata.gear, secondes);
-
+  sprintf(response, "PApp: %.2f %d %d %d", battery, encoder1, encoder2, mydata.gear);
   if (onhold) return response;
 
   switch (command[0]) {
   case 'i':                   // return info
     NRF_LOG_INFO("--> Command: i");
-    //sprintf(response, "PApp: %.2f %d %d, %ld %ld", battery, encoder1, encoder2, upp, downn);
-    sprintf(response, "PApp: %.2f %d %d %d", battery, encoder1, encoder2, mydata.gear);
+    // Use default response
     break;
   case 'm':               //  set setpoints (small steps)
     mydata.setpoint1 = par1;
@@ -252,6 +253,7 @@ char * process(char * command)
     sprintf(response, "mAB speed: %d, %d", speed1, speed2);
     motorAB_speed(speed1, speed2);
     if (speed1 == 0 && speed2 == 0) encmotor(false);
+
     break;
   case 'e' :
     sprintf(response, "Corr: %d, %d, ee: %d, st: %d", corr1, corr2, mydata.eepromcnt, mydata.stepsdone);
@@ -269,14 +271,15 @@ char * process(char * command)
     set_mydata();
     break;
   case 'Y':
-    sprintf(response, "Zero encoders.");
+    sprintf(response, "Zero encoders. Secs: %ld", secondes);
     encoder1 = 0; encoder2 = 0;
-    // tijdelijk
+    /** tijdelijk
     for (uint32_t i=0; i<500; i++) {
       tijden[i] = 0; encs[i] = 0; corrs[i] = 0;
     }
     tellertje = 0;
     upp=0; downn=0;
+    */
     break;
   case 'E':                   // error in positioning
     error = 1;
@@ -839,12 +842,9 @@ static void battery_handler(void * p_context)
     secondes += 1;
     // zet computertje uit na 24 uur geen pp commando
     if (secondes > 24*60*60) sd_power_system_off();
+    //if (secondes > 2*60) sd_power_system_off();
     // en bij heel lage spanning
-    if (battery < 6.0) sd_power_system_off();  
-  
-
-    //    sprintf(response, "Battery: %.2f Volt", battery);
-    //    NRF_LOG_INFO(" Battery %s", response);
+    if (battery < 6.0) sd_power_system_off();
 }
 
 static void create_timers()
@@ -974,6 +974,11 @@ static void gpio_init(void)
   nrf_gpio_cfg_output(ARDUINO_A5_PIN);
   nrf_gpio_cfg_output(ARDUINO_A6_PIN);
 
+  //nrf_gpio_cfg_output(LED_DL1);
+  //nrf_gpio_cfg_output(LED_DL2);
+
+  //nrf_gpio_pin_clear(LED_DL1);
+  //nrf_gpio_pin_clear(LED_DL2);
   nrf_gpio_pin_set(LED_DL3_RED);
   nrf_gpio_pin_set(LED_DL3_GRN);
   nrf_gpio_pin_set(LED_DL3_BLU);
@@ -1035,7 +1040,7 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         // to indicate error in the GUI
         if (error == 1) {
           battery = 100;
-          sprintf(response, "PApp: %.2f %d %d", battery, encoder1, encoder2);
+          sprintf(response, "PApp: %.2f %d %d %d", battery, encoder1, encoder2, mydata.gear);
           send_back(response);
           error = 2;
         }
@@ -1210,8 +1215,8 @@ void fstore_mydata(void) {
 
   ret_code_t rc;
   rc = nrf_fstorage_erase(&fstorage, (uint32_t)mydatapage, 1, NULL);
-  if (rc != NRF_SUCCESS)
-    nrf_gpio_pin_set(LED_DL2);
+  //if (rc != NRF_SUCCESS)
+  //  nrf_gpio_pin_set(LED_DL2);
   APP_ERROR_CHECK(rc);
 
   wait_for_flash_ready(&fstorage);

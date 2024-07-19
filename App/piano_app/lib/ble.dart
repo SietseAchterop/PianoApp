@@ -38,7 +38,7 @@ class Bluetooth {
   void onNewReceivedData(List<int> data, VoidCallback refresh) {
     _numberOfMessagesReceived += 1;
     String str = String.fromCharCodes(data);
-    debugPrint("====== en hier:   $str");
+    debugPrint("====== command:   $str");
     _receivedData.add("$_numberOfMessagesReceived: $str");
 
     // get battery voltage, current position and gearvalue
@@ -46,7 +46,8 @@ class Bluetooth {
     if (words[0] == "PApp:") {
       voltage.value = double.parse(words[1]);
       motorgear = double.parse(words[4]);
-      debugPrint("======  PApp ==   ${words[2]}  ${words[3]}");
+      debugPrint(
+          "=== PApp ==  ${words[1]} ${words[2]}  ${words[3]}  ${words[4]}");
       curLeftPos = (double.parse(words[2]) / motorgear).round();
       curRightPos = (double.parse(words[3]) / motorgear).round();
       // find if this setting is in the list

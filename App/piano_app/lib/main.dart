@@ -132,7 +132,6 @@ bool found = false;
 // connected to piano device
 ValueNotifier<bool> connDevice = ValueNotifier<bool>(false);
 ValueNotifier<double> voltage = ValueNotifier<double>(8.0);
-double spanning = 6.0;
 
 //  'Connect to ${settings.name}'
 //  'Connected to ${settings.name}'
@@ -198,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                 selectedColor: Colors.blue,
                 onTap: () async {
                   debugPrint("=====comm  $currentSetting  $index");
-                  if (connDevice.value && currentSetting != index) {
+                  if (connDevice.value) {
                     curLeftPos = settings.settings[index].L;
                     curRightPos = settings.settings[index].R;
                     // pp command
