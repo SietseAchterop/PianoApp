@@ -109,7 +109,7 @@ Future<File> writeSettings(String settings) async {
 }
 
 //
-Position neutral = Position("Neutral", 3, 3);
+Position neutral = Position("Neutral", 0, 0);
 Settings initial = Settings("noDevice", "noName", [neutral]);
 Settings settings = initial;
 
