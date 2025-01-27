@@ -17,9 +17,9 @@ mmx,y    :    set setpoints (small steps)
 pmx,y    :    set setpoints
 smx      :    set motor speed of a motor
 e        :    print corrections, eepromcnt, stepsdone
-f        :    print PID values
-g        :    print serialnumber, version, gearvalue
-Gmg      :    set gearvalue g
+f        :    print PID values and battery value
+g        :    print serialnumber, version, gearvalue, command time, max command time
+GGg      :    set gearvalue g
 X        :    init eeprom data  (after that, set accuval correct again)
 Y        :    zero encoders
 E        :    print error, save data in eeprom
@@ -31,7 +31,7 @@ Pmx,y    :    set P values
 Imx,y    :    set I values
 Dmx,y    :    set D values
 
-Amx      :    (L) set accuval, (R) get accuval
+Amx      :    (L) set accuval, (R) get accuval   (Commando F niet vergeten)
 Tmx      :    test motors. move motor randomly x times
 C        :    Calibrate motors (go to end stops)
 ## testing

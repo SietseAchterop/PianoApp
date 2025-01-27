@@ -82,11 +82,8 @@ SRC_FILES += \
   $(SDK_ROOT)/components/ble/peer_manager/security_dispatcher.c \
   $(SDK_ROOT)/components/ble/peer_manager/security_manager.c \
   $(SDK_ROOT)/components/ble/peer_manager/auth_status_tracker.c \
-  $(SDK_ROOT)/components/ble/peer_manager/gatt_cache_manager.c \
-  $(SDK_ROOT)/components/ble/peer_manager/gatts_cache_manager.c \
   $(SDK_ROOT)/components/libraries/fds/fds.c \
   $(SDK_ROOT)/modules/nrfx/drivers/src/nrfx_saadc.c \
-\
   $(SDK_ROOT)/components/libraries/crypto/backend/nrf_hw/nrf_hw_backend_init.c \
   $(SDK_ROOT)/components/libraries/crypto/backend/nrf_hw/nrf_hw_backend_rng.c \
   $(SDK_ROOT)/components/libraries/crypto/backend/nrf_hw/nrf_hw_backend_rng_mbedtls.c \
@@ -126,8 +123,6 @@ SRC_FILES += \
   $(SDK_ROOT)/components/libraries/crypto/backend/oberon/oberon_backend_hmac.c \
   $(SDK_ROOT)/components/libraries/crypto/backend/micro_ecc/micro_ecc_backend_ecc.c \
 
-
-
 # Include folders common to all targets
 INC_FOLDERS += \
   $(SDK_ROOT)/components/nfc/ndef/generic/message \
@@ -160,7 +155,6 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/ble/ble_services/ble_bas_c \
   $(SDK_ROOT)/modules/nrfx/drivers/include \
   $(SDK_ROOT)/components/libraries/experimental_task_manager \
-  $(SDK_ROOT)/components/ble/ble_services/ble_hrs_c \
   $(SDK_ROOT)/components/softdevice/s140/headers/nrf52 \
   $(SDK_ROOT)/components/nfc/ndef/connection_handover/le_oob_rec \
   $(SDK_ROOT)/components/libraries/queue \
@@ -236,7 +230,6 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/libraries/ringbuf \
   $(SDK_ROOT)/components/ble/ble_services/ble_tps \
   $(SDK_ROOT)/components/nfc/ndef/parser/message \
-  $(SDK_ROOT)/components/ble/ble_services/ble_dis \
   $(SDK_ROOT)/components/nfc/ndef/uri \
   $(SDK_ROOT)/components/ble/nrf_ble_gatt \
   $(SDK_ROOT)/components/ble/nrf_ble_qwr \
@@ -265,21 +258,17 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/libraries/fds \
   $(SDK_ROOT)/components/nfc/ndef/launchapp \
   $(SDK_ROOT)/components/libraries/atomic_flags \
-  $(SDK_ROOT)/components/ble/ble_services/ble_hrs \
   $(SDK_ROOT)/components/ble/ble_services/ble_rscs \
   $(SDK_ROOT)/components/nfc/ndef/connection_handover/hs_rec \
   $(SDK_ROOT)/components/nfc/ndef/conn_hand_parser/ac_rec_parser \
   $(SDK_ROOT)/components/libraries/stack_guard \
   $(SDK_ROOT)/components/libraries/log/src \
-  $(SDK_ROOT)/components/libraries/fstorage \
   $(SDK_ROOT)/external/nrf_cc310/include \
   $(SDK_ROOT)/external/nrf_cc310_bl/include \
   $(SDK_ROOT)/external/nrf_tls/mbedtls/nrf_crypto/config \
   $(SDK_ROOT)/external/nrf_oberon \
   $(SDK_ROOT)/external/mbedtls/include \
   $(SDK_ROOT)/components/libraries/stack_info \
-
-
 
 # Libraries common to all targets
 LIB_FILES += \
@@ -304,8 +293,8 @@ CFLAGS += -DS140
 CFLAGS += -DSOFTDEVICE_PRESENT
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb -mabi=aapcs
-#CFLAGS += -Wall -Werror
-CFLAGS += -Wall
+CFLAGS += -Wall -Werror
+#CFLAGS += -Wall
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # keep every function in a separate section, this allows linker to discard unused ones
 CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
@@ -335,7 +324,7 @@ LDFLAGS += -mcpu=cortex-m4
 LDFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # let linker dump unused sections
 LDFLAGS += -Wl,--gc-sections
-# use newlib in nano version  (including floats!)
+# use newlib in nano version (including floats!)
 LDFLAGS += --specs=nano.specs -u _printf_float
 #LDFLAGS += --specs=nano.specs -u _printf_float -u _scanf_float
 
@@ -389,4 +378,4 @@ erase:
 SDK_CONFIG_FILE := ../config/sdk_config.h
 CMSIS_CONFIG_TOOL := $(SDK_ROOT)/external_tools/cmsisconfig/CMSIS_Configuration_Wizard.jar
 sdk_config:
-	/home/sietse/bin/java -jar $(CMSIS_CONFIG_TOOL) $(SDK_CONFIG_FILE)
+	java -jar $(CMSIS_CONFIG_TOOL) $(SDK_CONFIG_FILE)

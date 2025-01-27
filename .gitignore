@@ -35,7 +35,7 @@ google-services.json
 
 
 # Nordic SDK build
-/piano_firmware/**/_build/
+/piano_firmware/**/_build*
 
 # Flutter/Dart/Pub related
 **/doc/api/

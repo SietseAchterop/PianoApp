@@ -1,17 +1,16 @@
 /**
- * Copyright (c) 2014 - 2020, Nordic Semiconductor ASA
+ * Copyright (c) 2014 - 2021, Nordic Semiconductor ASA
  *
- *   derived from ble_app_uart
+ * All rights reserved.
+ *
+
+ Piano app:
+    derived from ble_app_uart and pairing/bonding from  ble_app_gls
+    now 20 msec sampling rate
+
  */
 
-/*
-
-application begint op 0x27000
-Zie verder Leesme
-
-*/
-
-// Lijkt alleen nodig voor vscode
+// Alleen nodig voor vscode
 //#include <cstddef>
 
 #include <stdlib.h>
@@ -19,7 +18,6 @@ Zie verder Leesme
 #include <stdint.h>
 #include <string.h>
 #include <strings.h>
-
 #include "nordic_common.h"
 #include "nrf.h"
 #include "ble_hci.h"
@@ -51,10 +49,11 @@ Zie verder Leesme
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
+// added for peer manager
 #include "nrf_ble_lesc.h"
+#include "fds.h"
 #include "peer_manager.h"
 #include "peer_manager_handler.h"
-#include "fds.h"
 
 #define NUS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
@@ -63,7 +62,8 @@ Zie verder Leesme
 
 #define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
 
-#define APP_ADV_DURATION                0  //  for infinity 18000                                       /**< The advertising duration (180 seconds) in units of 10 milliseconds. */
+// voorlopig infinity: 0     ( init.advdata.flags              = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE; )
+#define APP_ADV_DURATION                0                                           /**< The advertising duration (180 seconds) in units of 10 milliseconds. */
 
 #define MIN_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)             /**< Minimum acceptable connection interval (20 ms), Connection interval uses 1.25 ms units. */
 #define MAX_CONN_INTERVAL               MSEC_TO_UNITS(75, UNIT_1_25_MS)             /**< Maximum acceptable connection interval (75 ms), Connection interval uses 1.25 ms units. */
@@ -77,7 +77,7 @@ Zie verder Leesme
 #define SEC_PARAM_MITM                      1                                       /**< Man In The Middle protection not required. */
 #define SEC_PARAM_LESC                      1                                       /**< LE Secure Connections enabled. */
 #define SEC_PARAM_KEYPRESS                  0                                       /**< Keypress notifications not enabled. */
-#define SEC_PARAM_IO_CAPABILITIES           BLE_GAP_IO_CAPS_DISPLAY_ONLY            /**< Display I/O capabilities. */
+#define SEC_PARAM_IO_CAPABILITIES           BLE_GAP_IO_CAPS_DISPLAY_ONLY            /**< Display only I/O capabilities. */
 #define SEC_PARAM_OOB                       0                                       /**< Out Of Band data not available. */
 #define SEC_PARAM_MIN_KEY_SIZE              7                                       /**< Minimum encryption key size. */
 #define SEC_PARAM_MAX_KEY_SIZE              16                                      /**< Maximum encryption key size. */
@@ -127,8 +127,6 @@ static void set_static_passkey()
 }
 
 
-static void advertising_start(bool erase_bonds);
-
 /**@brief Function for assert macro callback.
  *
  * @details This function will be called in case of an assert in the SoftDevice.
@@ -144,6 +142,8 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 {
     app_error_handler(DEAD_BEEF, line_num, p_file_name);
 }
+
+static void advertising_start(bool erase_bonds);
 
 /**@brief Function for handling Peer Manager events.
  *
@@ -216,8 +216,6 @@ static void timers_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
-// static void gap_params_init(void)  moved to commands.c
-
 /**@brief Function for the GAP initialization.
  *
  * @details This function will set up all the necessary GAP (Generic Access Profile) parameters of
@@ -250,7 +248,6 @@ static void gap_params_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
-
 /**@brief Function for handling events from the GATT library. */
 void gatt_evt_handler(nrf_ble_gatt_t * p_gatt, nrf_ble_gatt_evt_t const * p_evt)
 {
@@ -264,7 +261,6 @@ void gatt_evt_handler(nrf_ble_gatt_t * p_gatt, nrf_ble_gatt_evt_t const * p_evt)
                   p_gatt->att_mtu_desired_periph);
 }
 
-
 /**@brief Function for initializing the GATT library. */
 void gatt_init(void)
 {
@@ -276,7 +272,6 @@ void gatt_init(void)
     err_code = nrf_ble_gatt_att_mtu_periph_set(&m_gatt, NRF_SDH_BLE_GATT_MAX_MTU_SIZE);
     APP_ERROR_CHECK(err_code);
 }
-
 
 /**@brief Function for handling Queued Write Module errors.
  *
@@ -318,18 +313,16 @@ static void advertising_start(bool erase_bonds)
     }
 }
 
-
 /**********************/
 
 #include "commands.c"
 
 /**********************/
 
-
 /**@brief Function for handling the data from the Nordic UART Service.
  *
  * @details This function will send the data received from the Nordic UART BLE Service via
- *          the scheduler 
+ *          the scheduler
  *
  * @param[in] p_evt       Nordic UART Service event.
  */
@@ -343,7 +336,7 @@ static void nus_data_handler(ble_nus_evt_t * p_evt)
   if (p_evt->type == BLE_NUS_EVT_RX_DATA)
     {
 
-        NRF_LOG_DEBUG("Received data from BLE NUS. Writing data on UART.");
+        NRF_LOG_DEBUG("Received data from BLE NUS. Writing data to scheduler.");
         NRF_LOG_HEXDUMP_DEBUG(p_evt->params.rx_data.p_data, p_evt->params.rx_data.length);
 
 	length = p_evt->params.rx_data.length;
@@ -351,7 +344,7 @@ static void nus_data_handler(ble_nus_evt_t * p_evt)
 	// include terminating zero;
 	command[length] = 0;
 	app_sched_event_put(&command, length+1, my_scheduler_event_handler);
-	
+
     }
 
 }
@@ -372,7 +365,7 @@ static void services_init(void)
     err_code = nrf_ble_qwr_init(&m_qwr, &qwr_init);
     APP_ERROR_CHECK(err_code);
 
-    // Initialize NUS.  (Note, we changed NUS for security: JUST_WORKS
+    // Initialize NUS.
     memset(&nus_init, 0, sizeof(nus_init));
 
     nus_init.data_handler = nus_data_handler;
@@ -498,7 +491,6 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
     {
         case BLE_GAP_EVT_DISCONNECTED:
             NRF_LOG_INFO("Disconnected");
-            connected = false;
             m_conn_handle = BLE_CONN_HANDLE_INVALID;
             // Check if the last connected peer had not used MITM, if so, delete its bond information.
             if (m_peer_to_be_deleted != PM_PEER_ID_INVALID)
@@ -512,22 +504,21 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
 
         case BLE_GAP_EVT_CONNECTED:
             NRF_LOG_INFO("Connected");
-            connected = true;
             m_peer_to_be_deleted = PM_PEER_ID_INVALID;
             err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
             APP_ERROR_CHECK(err_code);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             err_code = nrf_ble_qwr_conn_handle_assign(&m_qwr, m_conn_handle);
             APP_ERROR_CHECK(err_code);
-	    /* needed ?
+	    /* needed ? */
             err_code = pm_conn_secure(p_ble_evt->evt.gap_evt.conn_handle, false);
             if (err_code != NRF_ERROR_BUSY)
             {
                 APP_ERROR_CHECK(err_code);
             }
-	    
+	    /*?*/
             break;
-	    */
+
         case BLE_GAP_EVT_PHY_UPDATE_REQUEST:
         {
             NRF_LOG_DEBUG("PHY update request.");
@@ -619,7 +610,6 @@ static void ble_stack_init(void)
     // Register a handler for BLE events.
     NRF_SDH_BLE_OBSERVER(m_ble_observer, APP_BLE_OBSERVER_PRIO, ble_evt_handler, NULL);
 }
-
 
 /**@brief Function for handling events from the BSP module.
  *
@@ -774,7 +764,6 @@ static void idle_state_handle(void)
     }
 }
 
-
 /**@brief Application main function.
  */
 int main(void)
@@ -808,17 +797,10 @@ int main(void)
     saadc_init();
     
     // Start execution.
-    printf("\r\nUART started.\r\n");
+    printf("\r\nECHO started.\r\n");
     NRF_LOG_INFO("Debug logging for UART over RTT started.");
     advertising_start(erase_bonds);
 
-    // Calibrate
-    char command[4];
-    if (mydata.stepsdone > 40) {
-        mydata.stepsdone = 1000; //hack
-        strcpy(command, "C");
-        app_sched_event_put(&command, 2, my_scheduler_event_handler);
-    }
     // Enter main loop.
     for (;;)
     {

@@ -291,15 +291,38 @@ class _HomePageState extends State<HomePage> {
             builder: (context, value, child) {
               return ElevatedButton(
                 // als voltage >20 dan Error geven
-                child: voltage.value > 20.0
-                    ? const Text('Position error!',
-                        style: TextStyle(color: Colors.red))
-                    : Text('Battery: ${voltage.value} Volt',
+
+                child: () {
+                  switch (voltage.value) {
+                    case 101:
+                    return const Text('Position error!',
+                        style: TextStyle(color: Colors.red));
+                    break;
+                    case 102:
+                    return const Text('Calibration error!',
+                        style: TextStyle(color: Colors.red));
+                    break;
+                    case 103:
+                    return const Text('Calibaration needed!',
+                        style: TextStyle(color: Colors.red));
+                    break;
+                    case 104:
+                    return const Text('Move error!',
+                        style: TextStyle(color: Colors.red));
+                    break;
+                    case 105:
+                    return const Text('Battery low, recharge!',
+                        style: TextStyle(color: Colors.red));
+                    break;
+                    default:
+                    return  Text('Battery: ${voltage.value} Volt',
                         style: TextStyle(
                             color: voltage.value > 6.9
                                 ? const Color.fromARGB(
                                     255, 22, 106, 161) // ad hoc
-                                : Colors.red)),
+                                : Colors.red));
+                    }
+                }(),
                 onPressed: () {},
               );
             },

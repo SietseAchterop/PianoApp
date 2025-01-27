@@ -1,6 +1,7 @@
 /******* Command processing for PianoApp
 
 Included in main.c
+   20msec
 
 Motors met verschillende vertragingen:
 het aantal tandwieltjes varieert en daarmee de richting waarin de motor draait!
@@ -12,9 +13,6 @@ Evt aanpassingen nodig:
 *******/
 
 #define VERSION 0
-
-// set in main.c:  ble_evt_handler
-bool connected = false;
 
 // prototypes
 void send_back(char * message);
@@ -87,14 +85,13 @@ extern const uint32_t mydatapage[100];
 #define encb1 ARDUINO_10_PIN
 #define encb2 ARDUINO_11_PIN
 
-// analoge input van battery spanning
-#define spanning ARDUINO_A3_PIN
-//  in Nordic sdk: NRF_SAADC_INPUT_AIN5
-
 // update firmware pin
 #define update ARDUINO_A7_PIN
 
+// batterijspanning via pin 7 van arduino. is NRF_SAADC_INPUT_AIN5 in Nordic SDK maar ARDUINO_A3_PIN bij arduino. Raar.
 float battery = 8.0;
+float batt    = 8.0;
+
 // an error occured 0; no error, 1 error, 2 notified app
 int error = 0;
 volatile uint32_t timer_counter = 0, test_counter = 0, starttime = 0, tellertje = 0, secondes = 0;
@@ -104,9 +101,19 @@ uint8_t control  = 0;
 int speed1 = 0, speed2 = 0;    // intended motor speed
 
 volatile int encoder1 = 0, encoder2 = 0;
+volatile int posenc1 = 0, posenc2 = 0;   // snelheids bewaking
 volatile int oldenc1, oldenc2;
 volatile int corr1, corr2, setp1, setp2;
 int calenc1, calenc2;
+
+// goto error state when reached
+#define TIMEOUT 2000
+
+// timing bijhouden van Calibrate en motor commando's
+#define CALNEEDED  150
+uint32_t maxtime = 2500;
+uint32_t hoelang = 0;
+uint32_t hoelangvalue = 0;
 
 // command response
 char response[50];
@@ -129,6 +136,7 @@ volatile uint32_t upp=0, downn=0;
      z mm verplaatsing per stapje
   factor: z*x/y
   bv: 0,5 * 1000 / 2 = 250
+   (hoeveel encoderstappen per motoromwenteling, 4?
 */
 #define GEARVALUE 8300
 
@@ -137,12 +145,9 @@ volatile uint32_t upp=0, downn=0;
 #define Idefault 0
 #define Ddefault 1
 
-// goto error state when reached
-#define TIMEOUT 4000
-
 void timer_start(void) {
   uint32_t err_code;
-  err_code = app_timer_start(my_timer_id, APP_TIMER_TICKS(10), NULL);
+  err_code = app_timer_start(my_timer_id, APP_TIMER_TICKS(20), NULL);
   APP_ERROR_CHECK(err_code);
   timer_counter = 0;
 }
@@ -197,6 +202,7 @@ Process commands.
  **/
 char * process(char * command)
 {
+
   int par1, par2 = 0;
   char motL = !(command[1] - 'l');     // 'l' (motorL) else (motorR)
 
@@ -218,32 +224,48 @@ char * process(char * command)
   switch (command[0]) {
   case 'i':                   // return info
     NRF_LOG_INFO("--> Command: i");
+    if (mydata.stepsdone > CALNEEDED) error = 3;
     // Use default response
     break;
   case 'm':               //  set setpoints (small steps)
     mydata.setpoint1 = par1;
     mydata.setpoint2 = par2;
     state = 0;
+    hoelang = 0;
     curTask = Final;
     control = 1;
     timer_start();
     break;
   case 'p':               //  set setpoints:  bijv. pp2,3
-    if ((battery > 6.5) && (battery < 20)) {
+    if (error == 0) {
       mydata.setpoint1 = mydata.gear*par1;
       mydata.setpoint2 = mydata.gear*par2;
       state = 0;
+      hoelang = 0;
+
+      // tijdelijk
+      for (uint32_t i=0; i<500; i++) {
+	tijden[i] = 0; encs[i] = 0; corrs[i] = 0;
+      }
+      tindex = 0;
+      running = 1;
+      starttime = NRF_RTC0->COUNTER;
+
       curTask = Final;
       control = 1;
       timer_start();
       mydata.stepsdone += 1;
       secondes = 0;
+
+     
+
+
     }
     else
-      if (battery > 20)
+      if (batt > 6.5)
 	sprintf(response, "Error mode! Turn device off and then on.");
       else
-	sprintf(response, "Battery voltage: %.2f. Charge battery!", battery);
+	sprintf(response, "Battery voltage: %.2f. Charge battery!", batt);
     break;
   case 's' :              // test motors separately
     if (motL)
@@ -258,13 +280,15 @@ char * process(char * command)
   case 'e' :
     sprintf(response, "Corr: %d, %d, ee: %d, st: %d", corr1, corr2, mydata.eepromcnt, mydata.stepsdone);
     break;
-  case 'f':                   // print PID values
+  case 'f':                   // print PID values and battery value
     sprintf(response, "PID1: %d, %d, %d", mydata.pval1, mydata.ival1, mydata.dval1);
     send_back(response);
     sprintf(response, "PID2: %d, %d, %d", mydata.pval2, mydata.ival2, mydata.dval2);
+    send_back(response);
+    sprintf(response, "Battery: %.2f", batt);
     break;
   case 'g':                   // print mydata
-    sprintf(response, "serial: %d, version: %d, gear: %d", mydata.serialnumber, mydata.version, mydata.gear);
+    sprintf(response, "serial: %d, version: %d, gear: %d, h: %ld %ld", mydata.serialnumber, mydata.version, mydata.gear, hoelangvalue, maxtime);
     break;
   case 'X':
     sprintf(response, "Init mydata.");
@@ -282,7 +306,6 @@ char * process(char * command)
     */
     break;
   case 'E':                   // error in positioning
-    error = 1;
     sprintf(response, "Error in pos!:");
     // needed to make sure that calibrate after software upload works.
     fstore_mydata();
@@ -366,14 +389,12 @@ char * process(char * command)
     }
     break;
   case 'C' :
+    if (batt < 6.5) break;
     sprintf(response, "Calibrate");
     state = 0;
     curTask = Cal;
     onhold = true;
-    if (mydata.stepsdone == 1000) { // hack
-      onhold = false;
-      mydata.stepsdone = 0;
-    }
+    // no control at first
     timer_start();
     break;
   case 't' :   // timer start en stop      Alleen voor testen
@@ -502,8 +523,8 @@ void calibrate(void) {
     //send_back(response);
     state = 1;
   case 1:
-    // to get started
-    if (timer_counter > 20) {
+    // 0.2 secs to get started
+    if (timer_counter > 10) {
       //encoders
       calenc1 = encoder1;
       calenc2 = encoder2;
@@ -511,20 +532,20 @@ void calibrate(void) {
       state = 2;
     }
     break;
-  case 2:    // both motors
-    if (timer_counter % 20 == 0) {
+  case 2:    // every 0.2 secs, both motors
+    if (timer_counter % 10 == 0) {
       // stop als het echt te lang duurt.
       if (timer_counter >  TIMEOUT) {
         state = 10;
         break;
       }
       // test if there is any movement
-      if ((abs(calenc1 - encoder1) < 500)) {
+      if ((abs(calenc1 - encoder1) < 250)) {  //  wat is het bij normaal lopen na 0.2 secs?
 	// we assume motorL is at stop
         motorAB_speed(0, CALSPEED);
         state = 3;
       }
-      if ((abs(calenc2 - encoder2) < 500)) {
+      if ((abs(calenc2 - encoder2) < 250)) {
         if (state == 3) {
           motorAB_speed(0, 0);
           state = 5;
@@ -539,13 +560,13 @@ void calibrate(void) {
     }
     break;
   case 3:   // only motorR
-    if (timer_counter % 20 == 0) {
+    if (timer_counter % 10 == 0) {
       // stop als het echt te lang duurt.
       if (timer_counter >  TIMEOUT) {
         state = 10;
         break;
       }
-      if ((abs(calenc2 - encoder2) < 500)) {
+      if ((abs(calenc2 - encoder2) < 250)) {
         motorAB_speed(0, 0);
         state = 5;
       }
@@ -553,13 +574,13 @@ void calibrate(void) {
     }
     break;
   case 4:  // only motorL
-    if (timer_counter % 20 == 0) {
+    if (timer_counter % 10 == 0) {
       // noodstop als het echt te lang duurt.
       if (timer_counter >  TIMEOUT) {
         state = 10;
         break;
       }
-      if ((abs(calenc1 - encoder1) < 500)) {
+      if ((abs(calenc1 - encoder1) < 250)) {
         motorAB_speed(0, 0);
         state = 5;
       }
@@ -574,20 +595,32 @@ void calibrate(void) {
     encoder2 = 5*mydata.gear + 2000;
     mydata.setpoint1 = current1;
     mydata.setpoint2 = current2;
+    //    mydata.setpoint1 = 0;
+    //    mydata.setpoint2 = 0;
     //    sprintf(response, "CAL done: %d, %d", encoder1, encoder2);
     //    send_back(response);
+
+    NRF_LOG_DEBUG("Calibrate: endposition.");
 
     state = 6;
     break;
   case 6:
     onhold = false;
     // nu gewoon als een normaal commando afmaken.
+    hoelang = 0;   // how long to end position?
+    mydata.stepsdone = 0;
+
     state = 0;
     curTask = Final;
     control = 1;
     timer_counter = 0;  // reset timeout
     break;
   case 10:   // Error
+    // voorlopig
+    error = 2;
+    state = 5;
+    break;
+
     motors_stop();
     timer_stop();
     // voorlopig voor testen
@@ -598,6 +631,7 @@ void calibrate(void) {
     mydata.stepsdone = 0;
     // 
     onhold = false;
+    error = 2;
     strcpy(command, "E");
     app_sched_event_put(&command, 2, my_scheduler_event_handler);
     curTask = None;
@@ -607,65 +641,94 @@ void calibrate(void) {
   }
 }
 
+uint32_t distance1, distance2;
+
+// process Final
 void final(void) {
   char command[4];
   
   switch (state) {
-  case 2:
-    // test for endposition
-    if ( (abs(mydata.setpoint1 - encoder1) < 10) &&
-         (abs(mydata.setpoint2 - encoder2) < 10)) {
-      state = 3;
-      timer_counter = 0;
-    } else {
-      if (timer_counter > TIMEOUT) {
-        motors_stop();
-        timer_stop();
-        strcpy(command, "E");
-        app_sched_event_put(&command, 2, my_scheduler_event_handler);
-        curTask = None;
-      }
-    }
-    break;
   case 0:
+    // set maxtime
+    distance1 = abs(mydata.setpoint1-encoder1);
+    distance2 = abs(mydata.setpoint2-encoder2);
+    if (distance2 > distance1) distance1 = distance2;
+    // how many half steps
+    distance2 = (distance2+10)/(mydata.gear/2);
+    maxtime = 300 + distance2*100;
+
     timer_counter = 0;
     state = 2;
     break;
-    //  case 1:
-    // not needed
-    //    if (timer_counter > 300)
-    //      state = 2;
-    //    break;
-  case 3:
-    if (timer_counter > 30)
+  case 2:
+    // to get up to speed
+    if (timer_counter > 8) {
       state = 4;
+      timer_counter = 0;
+      posenc1 = encoder1;
+      posenc2 = encoder2;
+    }
     break;
   case 4:
-   // 2nd test for endposition
-    if ( (abs(mydata.setpoint1 - encoder1) < 10) &&
-         (abs(mydata.setpoint2 - encoder2) < 10)) {
-      timer_counter = 0;
-      state = 5;
-    } else {
-      if (timer_counter > 1000) {
-        motors_stop();
-        timer_stop();
-        // error
-        strcpy(command, "E");
-        app_sched_event_put(&command, 2, my_scheduler_event_handler);
-        curTask = None;
+    // test for a problem every 0.2 seconds.
+    if (timer_counter %10 == 0) {
+      // nog meer dan 150 stapjes van het doel?
+      if (abs(mydata.setpoint1 - encoder1) > 150) {
+	// test snelheid
+	if (abs(posenc1 - encoder1) < 200) {
+	  error = 4;
+	  state = 7;
+	}
       }
+      if (abs(mydata.setpoint2 - encoder2) > 150) {
+	// test snelheid
+	if (abs(posenc2 - encoder2) < 200) {
+	  error = 4;
+	  state = 7;
+	}
+      }
+      posenc1 = encoder1; posenc2 = encoder2;
+      }
+    
+    // hoe vaak dit?
+    // if close to the target for both, set maxtime to 0.7 seconds from "now".
+    if ( (abs(mydata.setpoint1 - encoder1) < 150) &&
+         (abs(mydata.setpoint2 - encoder2) < 150)) {
+      maxtime = timer_counter + 35;
+      state = 5;
     }
     break;
   case 5:
-    if (timer_counter > 30) {
+    // test for endposition
+    if ( (abs(mydata.setpoint1 - encoder1) < 10) &&
+         (abs(mydata.setpoint2 - encoder2) < 10)) {
+      timer_counter = 0;
+      state = 6;
+    } else {
+      if (timer_counter > maxtime) {    //  af laten hangen van de grootte van de verplaatsing?
+	error = 1;
+	state = 7;
+      }
+    }
+    break;
+  case 6:
+    if (timer_counter > 10) {  // time to settle
+      hoelangvalue = hoelang;
       motors_stop(); 
-      timer_stop();  // kan dit in de interrupt routine?
+      timer_stop();
       // save reached position in flash
       strcpy(command, "F");
       app_sched_event_put(&command, 2, my_scheduler_event_handler);
       curTask = None;
     }
+    break;
+  case 7:
+    motors_stop(); 
+    timer_stop();
+    // signal error.
+    strcpy(command, "E");
+    app_sched_event_put(&command, 2, my_scheduler_event_handler);
+    curTask = None;
     break;
   default:
     break;
@@ -704,7 +767,7 @@ void testing(void) {
     test_counter--;
     break;
   case 1:
-    if (timer_counter%200 == 0) {
+    if (timer_counter%100 == 0) {
       state = 0;
     }
     break;
@@ -733,7 +796,7 @@ void testRandom(void) {
     }
     break;
   case 1:
-    if (timer_counter%300 == 0) {
+    if (timer_counter%150 == 0) {
       state = 0;
     }
     break;
@@ -758,7 +821,8 @@ static void my_timer_handler(void * p_context)
   int diff, sp, enc;
   uint8_t speed;
   timer_counter++;
-        
+  hoelang++;
+  
   // Calculate correction using PID
   // Encoder 1
   enc = encoder1;
@@ -839,12 +903,14 @@ static void battery_handler(void * p_context)
     UNUSED_PARAMETER(p_context);
 
     nrf_drv_saadc_sample();
+
     secondes += 1;
-    // zet computertje uit na 24 uur geen pp commando
-    if (secondes > 24*60*60) sd_power_system_off();
-    //if (secondes > 2*60) sd_power_system_off();
+    // zet computertje uit na 4 uur geen pp commando
+    if (secondes > 4*60*60) sd_power_system_off();
+    //    if (secondes > 2*60) sd_power_system_off();
     // en bij heel lage spanning
-    if (battery < 6.0) sd_power_system_off();
+    //  pas op bij testen zonder batterij!  voorlopig maar even niet.
+    //    if (batt < 6.0) sd_power_system_off();
 }
 
 static void create_timers()
@@ -1017,36 +1083,60 @@ static void gpio_init(void)
 
 #define SAMPLES_IN_BUFFER 1
 static nrf_saadc_value_t     m_buffer_pool[2][SAMPLES_IN_BUFFER];
-static uint32_t              m_adc_evt_counter;
 
 void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
 {
+  
     if (p_event->type == NRF_DRV_SAADC_EVT_DONE)
     {
         ret_code_t err_code;
 
         err_code = nrf_drv_saadc_buffer_convert(p_event->data.done.p_buffer, SAMPLES_IN_BUFFER);
         APP_ERROR_CHECK(err_code);
+	
+        batt = (float)p_event->data.done.p_buffer[0] * ((float)mydata.accucal)/10000000;
+	//	NRF_LOG_DEBUG("Bat = " NRF_LOG_FLOAT_MARKER, NRF_LOG_FLOAT(battery));
+	NRF_LOG_DEBUG("Error: %d", error);
 
-        int i;
-        NRF_LOG_INFO("ADC event number: %d", (int)m_adc_evt_counter);
-
-        for (i = 0; i < SAMPLES_IN_BUFFER; i++)
-        {
-            NRF_LOG_INFO("%d", p_event->data.done.p_buffer[i]);
-        }
-        m_adc_evt_counter++;
-        battery = (float)p_event->data.done.p_buffer[0] * ((float)mydata.accucal)/10000000;
+	if (batt < 6.5) error = 5;
+	
         // to indicate error in the GUI
-        if (error == 1) {
-          battery = 100;
+	switch (error) {
+	case 1:
+	  // position error
+          battery = 101;
+	  break;
+	case 2:
+	  // error in calibrate
+          battery = 102;
+	  break;
+	case 3:
+	  // calibration needed
+          battery = 103;
+	  break;
+	case 4:
+	  // error in "midflight"
+          battery = 104;
+	  break;
+	case 5:
+	  // battery low
+          battery = 105;
+	  break;
+	case -1:
+	  // don't give voltage anymore. only the error value
+	  break;
+	default:
+	  battery = batt;
+	  break;
+	}
+
+	NRF_LOG_DEBUG("Bat = " NRF_LOG_FLOAT_MARKER, NRF_LOG_FLOAT(batt));
+	
+	// only once
+        if (error > 0) {
           sprintf(response, "PApp: %.2f %d %d %d", battery, encoder1, encoder2, mydata.gear);
           send_back(response);
-          error = 2;
-        }
-        if (error == 2) {
-          // to send only once
-          battery = 100;
+          error = -1;
         }
     }
 }
@@ -1054,28 +1144,28 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
 
 void saadc_init(void)
 {
-    ret_code_t err_code;
-    nrf_saadc_channel_config_t channel_config =
-      NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN5);
-    channel_config.acq_time = NRF_SAADC_ACQTIME_40US;
+  ret_code_t err_code;
+  nrf_saadc_channel_config_t channel_config =
+    NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN5);
+  channel_config.acq_time = NRF_SAADC_ACQTIME_40US;
 
-    err_code = nrf_drv_saadc_init(NULL, saadc_callback);
-    APP_ERROR_CHECK(err_code);
+  err_code = nrf_drv_saadc_init(NULL, saadc_callback);
+  APP_ERROR_CHECK(err_code);
 
-    nrf_saadc_resolution_set(NRF_SAADC_RESOLUTION_14BIT);
-    nrf_saadc_oversample_set(NRF_SAADC_OVERSAMPLE_8X);
-    nrf_saadc_continuous_mode_disable();
-    nrf_saadc_burst_set(0, NRF_SAADC_BURST_ENABLED);
-    // wordt dit allemaal goed overgenomen?
+  nrf_saadc_resolution_set(NRF_SAADC_RESOLUTION_14BIT);
+  nrf_saadc_oversample_set(NRF_SAADC_OVERSAMPLE_8X);
+  nrf_saadc_continuous_mode_disable();
+  nrf_saadc_burst_set(0, NRF_SAADC_BURST_ENABLED);
+  // wordt dit allemaal goed overgenomen?
 
-    err_code = nrf_drv_saadc_channel_init(0, &channel_config);
-    APP_ERROR_CHECK(err_code);
+  err_code = nrf_drv_saadc_channel_init(0, &channel_config);
+  APP_ERROR_CHECK(err_code);
 
-    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[0], SAMPLES_IN_BUFFER);
-    APP_ERROR_CHECK(err_code);
+  err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[0], SAMPLES_IN_BUFFER);
+  APP_ERROR_CHECK(err_code);
 
-    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[1], SAMPLES_IN_BUFFER);
-    APP_ERROR_CHECK(err_code);
+  err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[1], SAMPLES_IN_BUFFER);
+  APP_ERROR_CHECK(err_code);
 
 }
 
@@ -1132,7 +1222,7 @@ static void pwm_init(void)
     };
     // Init PWM without error handler
   APP_ERROR_CHECK(nrf_drv_pwm_init(&m_pwm0, &config0, NULL));
-    
+
 }
 
 
@@ -1141,7 +1231,7 @@ static void pwm_init(void)
 static void fstorage_evt_handler(nrf_fstorage_evt_t * p_evt)
 {
     if (p_evt->result != NRF_SUCCESS)
-    {
+      {
         NRF_LOG_INFO("--> Event received: ERROR while executing an fstorage operation.");
         return;
     }

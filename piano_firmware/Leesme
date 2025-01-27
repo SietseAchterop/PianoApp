@@ -6,18 +6,26 @@ Firmware voor de Arduino-NANO-33
 =============================================
 
 - Nordic SDK: nRF5_SDK_17.1.0_ddde560 gebruikt voor maken.
-  - Zet compiler (nu ~/Software/gcc-arm-none-eabi-10.3-2021.10) goed in de SDK:
-        nRF5_SDK_17.0.2_d674dde/components/toolchain/gcc/Makefile.posix
+  - C-compiler in Debian 12.8: arm-none-eabi-gcc (15:12.2.rel1-1) 12.2.1 20221205
+    Maar die is te nieuw!
+      Gebruik: gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+      Maar aanbevolen wordt: gcc-arm-none-eabi-9-2020-q2-update
+       die nu dan maar.
+      
+  - Zet C-compiler goed in de SDK:
+        nRF5_SDK_17.1.0_ddde560/components/toolchain/gcc/Makefile.posix
     
-- C-compiler: arm-none-eabi-gcc (15:12.2.rel1-1) 12.2.1 20221205
-
 - Nordic secure-bootloader moet er eerst op zodat we daarna de firmware er via bluetooth op kunnen zetten
+  - zie ~/nano-nordic/secure_bootloader
   Daarvoor moet de SWD interface gebruikt worden.
   Omdat we de Arduino via een header monteren is er een speciaal tooltje gemaakt voor het eenmalige
   programmeren.
   MCU-Link van Embedded Artists wordt gebruik om via USB met de PC te verbinden.
-    (eerder met openocd)
+    (eerder met olimex)
   Programmeren gaat via gdb-multiarch.
+
+- Application begint op 0x27000 met softdevice
+    zie ld-file
 
 - Maak binaries:
    - ga naar pca10056/s140/armgcc  (product en compiler)
@@ -32,7 +40,7 @@ Firmware voor de Arduino-NANO-33
 
 - Programmeer eerste keer via SWD interface
    - ga naar pca10056/s140/armgcc/_build
-   - gdb-multiarch nrf52832_xxaa.hex
+   - gdb-multiarch nrf52840_xxaa.hex
    - commando's:
       tar ext :3333
       mon nrf52.cpu curstate 
@@ -66,11 +74,10 @@ Firmware voor de Arduino-NANO-33
          (om protectie uit te zetten)
    And then reset the device.
 
-
 - Programmeren via Bluetooth
    - verbind P0.03 (pen 11) van Arduino met ground
    - reset Arduino, of zet aan
-       dan verschijnt bluetooth DfuTarg device
+       dan verschijnt bluetooth DfuTarg device (en alle ledjes aan)
    - flash via DFU App van Nordic
 
 - Communiceren
@@ -81,7 +88,7 @@ Firmware voor de Arduino-NANO-33
         uses bleak library
 
 
-===========
+=========== (geen sudo nodig)
 #  BT le Toegang via linux
 #  hcitool lescan
 sudo setcap cap_net_raw+ep /usr/bin/hcitool
