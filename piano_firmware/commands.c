@@ -14,6 +14,9 @@ Evt aanpassingen nodig:
 
 #define VERSION 0
 
+// To collect data
+#define DEBUG 1
+
 // prototypes
 void send_back(char * message);
 void pwm_update_duty_cycle(uint8_t d_cycle1, uint8_t d_cycle2);
@@ -94,7 +97,7 @@ float batt    = 8.0;
 
 // an error occured 0; no error, 1 error, 2 notified app
 int error = 0;
-volatile uint32_t timer_counter = 0, test_counter = 0, starttime = 0, tellertje = 0, secondes = 0;
+volatile uint32_t timer_counter = 0, test_counter = 0, secondes = 0;
 
 // motor controller
 uint8_t control  = 0;
@@ -112,8 +115,7 @@ int calenc1, calenc2;
 // timing bijhouden van Calibrate en motor commando's
 #define CALNEEDED  150
 uint32_t maxtime = 2500;
-uint32_t hoelang = 0;
-uint32_t hoelangvalue = 0;
+bool testrun = false;
 
 // command response
 char response[50];
@@ -121,14 +123,14 @@ char commbuffer[50];
 
 float willekeurig;
 
-// Testing, tijdelijk
-uint32_t tijden[500];
-int16_t encs[500];
-int16_t corrs[500];
+#if DEBUG
+// Testing
+int32_t enc1[500];
+int32_t enc2[500];
 uint16_t tindex = 0;
 uint16_t running = 0;
-volatile uint32_t upp=0, downn=0;
-
+int stopL, stopR, caldone;
+#endif
 /*
   wat is de vermenigvuldigingsfactor naar encoder waarden?
      x stappen per omwenteling
@@ -231,7 +233,6 @@ char * process(char * command)
     mydata.setpoint1 = par1;
     mydata.setpoint2 = par2;
     state = 0;
-    hoelang = 0;
     curTask = Final;
     control = 1;
     timer_start();
@@ -241,25 +242,18 @@ char * process(char * command)
       mydata.setpoint1 = mydata.gear*par1;
       mydata.setpoint2 = mydata.gear*par2;
       state = 0;
-      hoelang = 0;
-
-      // tijdelijk
+#if DEBUG
       for (uint32_t i=0; i<500; i++) {
-	tijden[i] = 0; encs[i] = 0; corrs[i] = 0;
+	enc1[i] = 0; enc2[i] = 0;
       }
       tindex = 0;
       running = 1;
-      starttime = NRF_RTC0->COUNTER;
-
+#endif
       curTask = Final;
       control = 1;
       timer_start();
       mydata.stepsdone += 1;
       secondes = 0;
-
-     
-
-
     }
     else
       if (batt > 6.5)
@@ -288,7 +282,7 @@ char * process(char * command)
     sprintf(response, "Battery: %.2f", batt);
     break;
   case 'g':                   // print mydata
-    sprintf(response, "serial: %d, version: %d, gear: %d, h: %ld %ld", mydata.serialnumber, mydata.version, mydata.gear, hoelangvalue, maxtime);
+    sprintf(response, "serial: %d, version: %d, gear: %d, h: %ld", mydata.serialnumber, mydata.version, mydata.gear, maxtime);
     break;
   case 'X':
     sprintf(response, "Init mydata.");
@@ -297,13 +291,7 @@ char * process(char * command)
   case 'Y':
     sprintf(response, "Zero encoders. Secs: %ld", secondes);
     encoder1 = 0; encoder2 = 0;
-    /** tijdelijk
-    for (uint32_t i=0; i<500; i++) {
-      tijden[i] = 0; encs[i] = 0; corrs[i] = 0;
-    }
-    tellertje = 0;
-    upp=0; downn=0;
-    */
+    // don't forget F command
     break;
   case 'E':                   // error in positioning
     sprintf(response, "Error in pos!:");
@@ -334,18 +322,17 @@ char * process(char * command)
     fstore_mydata();
     break;
   case 'Z':
+#if DEBUG
     for (uint32_t i=0; i<500; i++) {
-      sprintf(response, "%lu, %d, %d", tijden[i], encs[i], corrs[i]);
+      sprintf(response, "   %ld, %ld", enc1[i], enc2[i]);
       send_back(response);
     }
-    break;
-  case 'r' :
-    // RTC counter
-    sprintf(response, "Counter %ld", NRF_RTC0->COUNTER);
-    for (uint32_t i=0; i<500; i++) {
-      tijden[i] = i;
-    }
-    tindex = 0;
+    sprintf(response, "Stops: %d, %d, %d", stopL, stopR, caldone);
+    send_back(response);
+#else
+    sprintf(response, "No debug mode.");
+    send_back(response);
+#endif    
     break;
   case 'P':               // P values  (-1 to reset eeprom values)
     mydata.pval1 = par1;
@@ -368,29 +355,44 @@ char * process(char * command)
       sprintf(response, "Accucal %d", mydata.accucal);
     }
     break;
+#if DEBUG
   case 'T' :
     for (uint32_t i=0; i<500; i++) {
-      tijden[i] = 0; encs[i] = 0; corrs[i] = 0;
+      enc1[i] = 0; enc2[i] = 0;
     }
     sprintf(response, "Test motors\n\r");
     test_counter = par1;
+    if ((test_counter < 0) || (test_counter >400)) {
+	sprintf(response, "Test parameter between 0 and 400!");
+	break;
+      }
     if (test_counter == 0) {
-      sprintf(response, "End test %ld", test_counter);
+      sprintf(response, "Stop test");
       if (curTask == Test)
         curTask = Final;
     } else {
-
-      tellertje = 0;
- 
       control = 1;
       state = 0;
+      testrun = true;
       curTask = Test;
+      mydata.stepsdone += 1;    // zou eigenlijk test_counter moeten zijn. Testen rekenen we niet mee
       timer_start();
     }
     break;
+#endif
   case 'C' :
     if (batt < 6.5) break;
     sprintf(response, "Calibrate");
+
+#if DEBUG
+    for (uint32_t i=0; i<500; i++) {
+      enc1[i] = 0; enc2[i] = 0;
+    }
+    tindex = 0;
+    running = 1;
+    stopL =0; stopR = 0; caldone = 0;
+#endif
+      
     state = 0;
     curTask = Cal;
     onhold = true;
@@ -416,15 +418,17 @@ char * process(char * command)
       // voorlopig
       //      mydata.setpoint1 = encoder1;
       //      mydata.setpoint2 = encoder2;
-      starttime = NRF_RTC0->COUNTER;
       timer_counter = 0;
       control = 1;
+#if DEBUG
+      tindex = 0;
       running = 1;
+#endif
     }
     else {
       control = 0;
       motors_stop();
-      mydata.setpoint1 = 0; mydata.setpoint1 = 0;
+      mydata.setpoint1 = 0; mydata.setpoint2 = 0;
       encoder1 = 0; encoder2 = 0;
       curTask = None;
     }
@@ -514,17 +518,14 @@ void calibrate(void) {
   switch (state) {
   case 0:
     timer_counter = 0;
-    // remember where we are supposed to be
+    // remember where we are supposed to be (not used now)
     current1 = mydata.setpoint1;
-    current2 = mydata.setpoint1;
+    current2 = mydata.setpoint2;
     motorAB_speed(CALSPEED, CALSPEED);
-    // print vanuit interrupt?
-    //sprintf(response, "CAL start: %d, %d", encoder1, encoder2);
-    //send_back(response);
     state = 1;
   case 1:
-    // 0.2 secs to get started
-    if (timer_counter > 10) {
+    // 0.4 secs to get started
+    if (timer_counter > 20) {
       //encoders
       calenc1 = encoder1;
       calenc2 = encoder2;
@@ -532,26 +533,35 @@ void calibrate(void) {
       state = 2;
     }
     break;
-  case 2:    // every 0.2 secs, both motors
-    if (timer_counter % 10 == 0) {
+  case 2:    // every 0.1 secs, both motors
+    if (timer_counter % 5 == 0) {
       // stop als het echt te lang duurt.
       if (timer_counter >  TIMEOUT) {
         state = 10;
         break;
       }
       // test if there is any movement
-      if ((abs(calenc1 - encoder1) < 250)) {  //  wat is het bij normaal lopen na 0.2 secs?
+      if ((abs(calenc1 - encoder1) < 125)) {  //  wat is het bij normaal lopen na 0.2 secs?
 	// we assume motorL is at stop
         motorAB_speed(0, CALSPEED);
+#if DEBUG
+	stopL = encoder1;
+#endif
         state = 3;
       }
-      if ((abs(calenc2 - encoder2) < 250)) {
+      if ((abs(calenc2 - encoder2) < 125)) {
         if (state == 3) {
+#if DEBUG
+	stopR = encoder1;
+#endif
           motorAB_speed(0, 0);
           state = 5;
         }
         else {
           motorAB_speed(CALSPEED, 0);
+#if DEBUG
+	  stopR = encoder2;
+#endif
           state = 4;
         }
       }
@@ -560,13 +570,16 @@ void calibrate(void) {
     }
     break;
   case 3:   // only motorR
-    if (timer_counter % 10 == 0) {
+    if (timer_counter % 5 == 0) {
       // stop als het echt te lang duurt.
       if (timer_counter >  TIMEOUT) {
         state = 10;
         break;
       }
-      if ((abs(calenc2 - encoder2) < 250)) {
+      if ((abs(calenc2 - encoder2) < 125)) {
+#if DEBUG
+	stopR = encoder2;
+#endif
         motorAB_speed(0, 0);
         state = 5;
       }
@@ -574,13 +587,16 @@ void calibrate(void) {
     }
     break;
   case 4:  // only motorL
-    if (timer_counter % 10 == 0) {
+    if (timer_counter % 5 == 0) {
       // noodstop als het echt te lang duurt.
       if (timer_counter >  TIMEOUT) {
         state = 10;
         break;
       }
-      if ((abs(calenc1 - encoder1) < 250)) {
+      if ((abs(calenc1 - encoder1) < 125)) {
+#if DEBUG
+	stopL = encoder1;
+#endif
         motorAB_speed(0, 0);
         state = 5;
       }
@@ -589,17 +605,19 @@ void calibrate(void) {
     break;
   case 5:
     // Both at the stop, now move back one step.
-    // We now are at 5*gear + 500 and need to go to current
+    // We now are at 5*gear + 4000 and need to go to position zero
     //
-    encoder1 = 5*mydata.gear + 2000;
-    encoder2 = 5*mydata.gear + 2000;
-    mydata.setpoint1 = current1;
-    mydata.setpoint2 = current2;
-    //    mydata.setpoint1 = 0;
-    //    mydata.setpoint2 = 0;
-    //    sprintf(response, "CAL done: %d, %d", encoder1, encoder2);
-    //    send_back(response);
+    encoder1 = 5*mydata.gear + 4000;
+    encoder2 = 5*mydata.gear + 4000;
+    //    mydata.setpoint1 = current1;
+    //    mydata.setpoint2 = current2;
+    mydata.setpoint1 = 0;
+    mydata.setpoint2 = 0;
 
+#if DEBUG
+    caldone = encoder1;
+#endif
+    
     NRF_LOG_DEBUG("Calibrate: endposition.");
 
     state = 6;
@@ -607,7 +625,6 @@ void calibrate(void) {
   case 6:
     onhold = false;
     // nu gewoon als een normaal commando afmaken.
-    hoelang = 0;   // how long to end position?
     mydata.stepsdone = 0;
 
     state = 0;
@@ -616,14 +633,9 @@ void calibrate(void) {
     timer_counter = 0;  // reset timeout
     break;
   case 10:   // Error
-    // voorlopig
-    error = 2;
-    state = 5;
-    break;
-
     motors_stop();
     timer_stop();
-    // voorlopig voor testen
+    // voorlopig
     mydata.setpoint1 = 0;
     mydata.setpoint2 = 0;
     encoder1 = mydata.setpoint1;
@@ -662,7 +674,7 @@ void final(void) {
     break;
   case 2:
     // to get up to speed
-    if (timer_counter > 8) {
+    if (timer_counter > 20) {
       state = 4;
       timer_counter = 0;
       posenc1 = encoder1;
@@ -690,7 +702,6 @@ void final(void) {
       posenc1 = encoder1; posenc2 = encoder2;
       }
     
-    // hoe vaak dit?
     // if close to the target for both, set maxtime to 0.7 seconds from "now".
     if ( (abs(mydata.setpoint1 - encoder1) < 150) &&
          (abs(mydata.setpoint2 - encoder2) < 150)) {
@@ -713,16 +724,22 @@ void final(void) {
     break;
   case 6:
     if (timer_counter > 10) {  // time to settle
-      hoelangvalue = hoelang;
-      motors_stop(); 
-      timer_stop();
-      // save reached position in flash
-      strcpy(command, "F");
-      app_sched_event_put(&command, 2, my_scheduler_event_handler);
-      curTask = None;
+      if (testrun) {
+	state = 0;
+	curTask = Test; // continue testing
+      }
+      else {
+	motors_stop(); 
+	timer_stop();
+	// save reached position in flash
+	strcpy(command, "F");
+	app_sched_event_put(&command, 2, my_scheduler_event_handler);
+	curTask = None;
+      }
     }
     break;
   case 7:
+    testrun = false;
     motors_stop(); 
     timer_stop();
     // signal error.
@@ -736,72 +753,34 @@ void final(void) {
 
 }
 
-// random setpoint
-uint32_t random(void) {
-  char response[30];
-  int willekeurig = mydata.gear*(rand()%12 - 6);
-  sprintf(response, "rand %d", willekeurig);
-  send_back(response);
+// random setpoint  -5 ..  5
+int random(void) {
+  int willekeurig = mydata.gear*(rand()%11 - 5);
   return willekeurig;
 }
 
 // nadeel, beide motoren moeten werken.
-int ttt = 0;
 void testing(void) {
-
   switch (state) {
   case 0:
     timer_counter = 0;
+    test_counter--;
     if (test_counter == 0) {
-      state = 2;
-      break;
-    } else {
-      if (ttt == 0)
-        ttt = 1000;
-      else
-        ttt = 0;
-      mydata.setpoint1 = ttt;
-      mydata.setpoint2 = ttt;
       state = 1;
-    }
-    test_counter--;
-    break;
-  case 1:
-    if (timer_counter%100 == 0) {
-      state = 0;
-    }
-    break;
-  case 2:
-    state = 0;
-    curTask = Final;
-    break;
-  default:
-    break;
-  }
-}
-
-void testRandom(void) {
-
-  switch (state) {
-  case 0:
-    timer_counter = 0;
-    test_counter--;
-    if (test_counter == 0) {
-      state = 2;
       break;
     } else {
       mydata.setpoint1 = random();
-      mydata.setpoint2 = random();
-      state = 1;
+      mydata.setpoint2 = mydata.setpoint1;
+      enc1[test_counter] = mydata.setpoint1;
+      state = 0;
+      curTask = Final; // finish this step of the test
     }
     break;
   case 1:
-    if (timer_counter%150 == 0) {
-      state = 0;
-    }
-    break;
-  case 2:
     state = 0;
+    testrun = false;   // last step is: return to 0,0
+    mydata.setpoint1 = 0;
+    mydata.setpoint2 = 0;
     curTask = Final;
     break;
   default:
@@ -821,7 +800,6 @@ static void my_timer_handler(void * p_context)
   int diff, sp, enc;
   uint8_t speed;
   timer_counter++;
-  hoelang++;
   
   // Calculate correction using PID
   // Encoder 1
@@ -870,15 +848,16 @@ static void my_timer_handler(void * p_context)
     motorAB_speed((int8_t)corr1, (int8_t)corr2);
   }
 
+#if DEBUG
   // collect some data
   if (running) {
-    tijden[tindex] = NRF_RTC0->COUNTER-starttime;
-    encs[tindex] = encoder1;
-    corrs[tindex] = corr1;
+    enc1[tindex] = encoder1;
+    enc2[tindex] = encoder2;
     tindex++;
     if (tindex > 500) { running = 0; tindex = 0; }
   }
-
+#endif
+  
   // other processing: calibration and motor testing
   switch (curTask) {
   case None:
@@ -936,21 +915,9 @@ static void create_timers()
 void encoder1Event(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
 {
 
-  /*
-  if (tellertje < 500) {
-    
-    tijden[tellertje] = tellertje;
-    encs[tellertje]   = encoder1;
-    corrs[tellertje]  = encoder2;
-
-    tellertje++;
-  }
-  */
-
   // PIN zou encoder moeten volgen. Wat is de vertraging?
 
   if (nrf_drv_gpiote_in_is_set(enca1)) {
-    upp++;
     //    nrf_gpio_pin_set(ARDUINO_A5_PIN);
     if (!nrf_gpio_pin_read(enca2)) {
       encoder1++;
@@ -962,7 +929,6 @@ void encoder1Event(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
       encoder1--;
     }
   } else {
-    downn++;
     //    nrf_gpio_pin_clear(ARDUINO_A5_PIN);
     if (!nrf_gpio_pin_read(enca2)) {
       encoder1--;

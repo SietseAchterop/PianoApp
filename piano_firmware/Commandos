@@ -5,37 +5,37 @@ xya
 xya,b
   x: commando
   y: motor left or right (l or not-l)
+       if not used: m (don't care), normally use commandletter, e.g. pp0,0
   a: par1
   b: par2
      a and b : integer
 
 i        :    info, prints:
 	        PApp: bat, encoder1, encoder2, gearvalue
-		 bat: battery voltage or 100 to indicate error.
-                      When 100 reset device
+		 bat: battery voltage or >= 100 to indicate error.
+                      When >= 100 reset device
 mmx,y    :    set setpoints (small steps)
-pmx,y    :    set setpoints
-smx      :    set motor speed of a motor
+pmx,y    :    set setpoints  (-5, ..  + 5)
+                one step = gearvalue
+syx      :    set motor speed of a motor
 e        :    print corrections, eepromcnt, stepsdone
 f        :    print PID values and battery value
-g        :    print serialnumber, version, gearvalue, command time, max command time
-GGg      :    set gearvalue g
+g        :    print serialnumber, version, gearvalue, max command time
+Gmg      :    set gearvalue g
 X        :    init eeprom data  (after that, set accuval correct again)
-Y        :    zero encoders
+Y        :    zero encoders (also use F to save to permanent memory)
 E        :    print error, save data in eeprom
 F        :    save data in eeprom
 Sms      :    set serial number and passkey
-Z        :    print data collected after command c
-r        :    init array tijden.
+Z        :    print data collected after command p
 Pmx,y    :    set P values
 Imx,y    :    set I values
 Dmx,y    :    set D values
+Ayx      :    (L) set accuval, (R) get accuval   (Commando F niet vergeten)
+Tmx      :    test motors. move motor randomly x times, end on position 0,0
+C        :    Calibrate motors: go to end stop and then to new position 0,0
 
-Amx      :    (L) set accuval, (R) get accuval   (Commando F niet vergeten)
-Tmx      :    test motors. move motor randomly x times
-C        :    Calibrate motors (go to end stops)
 ## testing
-tm       :    start (L) of stop (R) timer
-qm       :    start (L) if stop (R) motor/encoder
-cm       :    control on (L) and off (R)
-Om       :    turn power off
+ty       :    start (L) of stop (R) timer
+qy       :    start (L) if stop (R) motor/encoder
+cy       :    control on (L) and off (R)

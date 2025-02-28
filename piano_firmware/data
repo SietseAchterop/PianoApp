@@ -246,3 +246,8 @@ met halve stapjes
 0, 0, 0
 0, 0, 0
 0, 0, 0
+
+400 microseconden per stapje
+2 motoren : 200 microseconde
+48MHz processor, ongeveer 0,1 microseconde per instructie. budget van 2000 instructie, zou moeten passen.
+hoe lang latency door Softdevice:
