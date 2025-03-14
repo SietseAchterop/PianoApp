@@ -8,6 +8,9 @@
     derived from ble_app_uart and pairing/bonding from  ble_app_gls
     now 20 msec sampling rate
 
+    battery timer, pwm and saads only running when connected to app.
+    uses 0.1mA with only advertising. In theorie: 2600mA -> 2,4 jaar.
+
  */
 
 // Alleen nodig voor vscode
@@ -39,7 +42,6 @@
 #include "bsp_btn_ble.h"
 #include "nrf_pwr_mgmt.h"
 #include "nrf_drv_pwm.h"
-#include "nrfx_pwm.h"
 #include "nrf_drv_saadc.h"
 
 #include "nrf_fstorage.h"
@@ -60,7 +62,8 @@
 #define APP_BLE_OBSERVER_PRIO           3                                           /**< Application's BLE observer priority. You shouldn't need to modify this value. */
 #define APP_BLE_CONN_CFG_TAG            1                                           /**< A tag identifying the SoftDevice BLE configuration. */
 
-#define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
+#define APP_ADV_INTERVAL                300   // larger does not work with flutter app
+                                                                                    /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
 
 // voorlopig infinity: 0     ( init.advdata.flags              = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE; )
 #define APP_ADV_DURATION                0                                           /**< The advertising duration (180 seconds) in units of 10 milliseconds. */
@@ -500,6 +503,7 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
                 NRF_LOG_DEBUG("Collector's bond deleted");
                 m_peer_to_be_deleted = PM_PEER_ID_INVALID;
             }
+	    stop_peripherals();
             break;
 
         case BLE_GAP_EVT_CONNECTED:
@@ -516,7 +520,7 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
             {
                 APP_ERROR_CHECK(err_code);
             }
-	    /*?*/
+	    start_peripherals();
             break;
 
         case BLE_GAP_EVT_PHY_UPDATE_REQUEST:
@@ -775,7 +779,6 @@ int main(void)
     timers_init();
     buttons_leds_init(&erase_bonds);
     gpio_init();
-    pwm_init();
     power_management_init();
     ble_stack_init();
 
@@ -794,7 +797,6 @@ int main(void)
 
     APP_SCHED_INIT(SCHED_MAX_EVENT_DATA_SIZE, SCHED_QUEUE_SIZE);
     create_timers();
-    saadc_init();
     
     // Start execution.
     printf("\r\nECHO started.\r\n");

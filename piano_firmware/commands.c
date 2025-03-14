@@ -143,7 +143,8 @@ int stopL, stopR, caldone;
 #define GEARVALUE 8300
 
 // default PID values
-#define Pdefault 4
+// P will be set to 4 when almost at position
+#define Pdefault 20
 #define Idefault 0
 #define Ddefault 1
 
@@ -262,14 +263,19 @@ char * process(char * command)
 	sprintf(response, "Battery voltage: %.2f. Charge battery!", batt);
     break;
   case 's' :              // test motors separately
-    if (motL)
+    if (motL) {
       speed1 = par1;
-    else
+      speed2 = 0;
+    }
+    else {
+      speed1 = 0;
       speed2 = par1;
-    sprintf(response, "mAB speed: %d, %d", speed1, speed2);
+    }
     motorAB_speed(speed1, speed2);
-    if (speed1 == 0 && speed2 == 0) encmotor(false);
-
+    if (speed1 == 0 && speed2 == 0) {
+      encmotor(false);
+    }
+    sprintf(response, "mAB speed: %d, %d", speed1, speed2);
     break;
   case 'e' :
     sprintf(response, "Corr: %d, %d, ee: %d, st: %d", corr1, corr2, mydata.eepromcnt, mydata.stepsdone);
@@ -355,6 +361,9 @@ char * process(char * command)
       sprintf(response, "Accucal %d", mydata.accucal);
     }
     break;
+  case 'R':               // reset device
+    sd_nvic_SystemReset();
+    break;
 #if DEBUG
   case 'T' :
     for (uint32_t i=0; i<500; i++) {
@@ -392,7 +401,8 @@ char * process(char * command)
     running = 1;
     stopL =0; stopR = 0; caldone = 0;
 #endif
-      
+    // remove error      
+    error = 0;
     state = 0;
     curTask = Cal;
     onhold = true;
@@ -654,47 +664,52 @@ void calibrate(void) {
 }
 
 uint32_t distance1, distance2;
+volatile bool far1 = true, far2 = true;
 
 // process Final
 void final(void) {
   char command[4];
-  
+  distance1 = abs(mydata.setpoint1 -encoder1);
+  distance2 = abs(mydata.setpoint2 -encoder2);
+
   switch (state) {
   case 0:
     // set maxtime
-    distance1 = abs(mydata.setpoint1-encoder1);
-    distance2 = abs(mydata.setpoint2-encoder2);
     if (distance2 > distance1) distance1 = distance2;
     // how many half steps
-    distance2 = (distance2+10)/(mydata.gear/2);
-    maxtime = 300 + distance2*100;
+    distance1 = (distance1+10)/(mydata.gear/2);
+    //    maxtime = 300 + distance1*100;
+    maxtime = 600 + distance1*100;   // tijdelijk extra groot
 
+    // to set PID values 
+    far1 = true; far2 = true;
+    
     timer_counter = 0;
-    state = 2;
+    state = 1;
     break;
-  case 2:
+  case 1:
     // to get up to speed
     if (timer_counter > 20) {
-      state = 4;
       timer_counter = 0;
       posenc1 = encoder1;
       posenc2 = encoder2;
+      state = 2;
     }
     break;
-  case 4:
+  case 2:
     // test for a problem every 0.2 seconds.
     if (timer_counter %10 == 0) {
       // nog meer dan 150 stapjes van het doel?
-      if (abs(mydata.setpoint1 - encoder1) > 150) {
+      if (distance1 > 150) {
 	// test snelheid
-	if (abs(posenc1 - encoder1) < 200) {
+	if (abs(posenc1 - encoder1) < 40) {
 	  error = 4;
 	  state = 7;
 	}
       }
-      if (abs(mydata.setpoint2 - encoder2) > 150) {
+      if (distance2 > 150) {
 	// test snelheid
-	if (abs(posenc2 - encoder2) < 200) {
+	if (abs(posenc2 - encoder2) < 40) {
 	  error = 4;
 	  state = 7;
 	}
@@ -702,21 +717,65 @@ void final(void) {
       posenc1 = encoder1; posenc2 = encoder2;
       }
     
-    // if close to the target for both, set maxtime to 0.7 seconds from "now".
-    if ( (abs(mydata.setpoint1 - encoder1) < 150) &&
-         (abs(mydata.setpoint2 - encoder2) < 150)) {
-      maxtime = timer_counter + 35;
+    // if close to the target for both, determine signs
+    if (distance1 < 20)  {
+      far1 = false;
+      state = 3;
+    }
+    if (distance2 < 20)  {
+      far2 = false;
+      state = 4;
+    }
+    break;
+  case 3:
+    // only R
+    if (timer_counter %10 == 0) {
+      // nog meer dan 150 stapjes van het doel?
+      if (distance2 > 150) {
+	// test snelheid
+	if (abs(posenc2 - encoder2) < 40) {
+	  error = 4;
+	  state = 7;
+	}
+      }
+      posenc2 = encoder2;
+      }
+    
+    // if close to the target for both, determine signs
+    if (distance2 < 20)  {
+      far2 = false;
       state = 5;
     }
     break;
+
+  case 4:
+    // only L
+    if (timer_counter %10 == 0) {
+      // nog meer dan 150 stapjes van het doel?
+      if (distance1 > 150) {
+	// test snelheid
+	if (abs(posenc1 - encoder1) < 40) {
+	  error = 4;
+	  state = 7;
+	}
+      }
+      posenc1 = encoder1;
+      }
+    
+    // if close to the target for both, determine signs
+    if (distance1 < 20)  {
+      far1 = false;
+      state = 5;
+    }
+    break;
+
   case 5:
-    // test for endposition
-    if ( (abs(mydata.setpoint1 - encoder1) < 10) &&
-         (abs(mydata.setpoint2 - encoder2) < 10)) {
+    // test for endposition   far1 and far2 already false
+    if ((distance1 < 20) && (distance2 < 20)) {
       timer_counter = 0;
       state = 6;
     } else {
-      if (timer_counter > maxtime) {    //  af laten hangen van de grootte van de verplaatsing?
+      if (timer_counter > maxtime) {
 	error = 1;
 	state = 7;
       }
@@ -731,6 +790,8 @@ void final(void) {
       else {
 	motors_stop(); 
 	timer_stop();
+	far1 = true, far2 = true;
+
 	// save reached position in flash
 	strcpy(command, "F");
 	app_sched_event_put(&command, 2, my_scheduler_event_handler);
@@ -742,6 +803,7 @@ void final(void) {
     testrun = false;
     motors_stop(); 
     timer_stop();
+    far1 = true, far2 = true;
     // signal error.
     strcpy(command, "E");
     app_sched_event_put(&command, 2, my_scheduler_event_handler);
@@ -805,17 +867,22 @@ static void my_timer_handler(void * p_context)
   // Encoder 1
   enc = encoder1;
   diff = enc - mydata.setpoint1;
-  sp =  enc - oldenc1;      // speed: distance per 0.01 sec.
+  sp =  enc - oldenc1;      // speed: distance per 0.02 sec.
   // integrate: add diffs with a maximum value
   // intgr = ...
   oldenc1 = enc;
+  // set second PID values at first sign switch  hoe goed te detecteren? niet hier maar in final!
   // PID 1
-  corr1 = mydata.pval1*diff + mydata.dval1*sp;   // + mydata.ival2*intgr;
+  if (far1) 
+    corr1 = mydata.pval1*diff + mydata.dval1*sp;   // + mydata.ival2*intgr;
+  else
+    corr1 = 4*diff + 1*sp;   // + mydata.ival2*intgr;
+    
   // limit correction, only at higher speed
   //   interrupts should not occur much faster than 1 per 500 microseconds (twice, once for each edge)
-  //   meaning less than 20 increments per 10 milliseconds
+  //   meaning less than 40 increments per 20 milliseconds
   sp = abs(sp);
-  if (sp > 20)
+  if (sp > 40)
     speed = LOWSPEED;
   else
     speed = MAXSPEED;
@@ -827,14 +894,17 @@ static void my_timer_handler(void * p_context)
   // Encoder 2
   enc = encoder2;
   diff = enc - mydata.setpoint2;
-  sp =  enc - oldenc2;      //  speed: distance per 0.01 sec.
+  sp =  enc - oldenc2;      //  speed: distance per 0.02 sec.
   // intgr = ...
   oldenc2 = enc;
   // PID 2
-  corr2 = mydata.pval2*diff + mydata.dval2*sp;   // + mydata.ival2*intgr;
+  if (far2)
+    corr2 = mydata.pval2*diff + mydata.dval2*sp;   // + mydata.ival2*intgr;
+  else
+    corr2 = 4*diff + 1*sp;   // + mydata.ival2*intgr;
   // limit speed
   sp = abs(sp);
-  if (sp > 20)
+  if (sp > 40)
     speed = LOWSPEED;
   else
     speed = MAXSPEED;
@@ -885,11 +955,7 @@ static void battery_handler(void * p_context)
 
     secondes += 1;
     // zet computertje uit na 4 uur geen pp commando
-    if (secondes > 4*60*60) sd_power_system_off();
-    //    if (secondes > 2*60) sd_power_system_off();
-    // en bij heel lage spanning
-    //  pas op bij testen zonder batterij!  voorlopig maar even niet.
-    //    if (batt < 6.0) sd_power_system_off();
+    //    if (secondes > 4*60*60) sd_power_system_off();
 }
 
 static void create_timers()
@@ -906,9 +972,6 @@ static void create_timers()
                               battery_handler);
   APP_ERROR_CHECK(err_code);
 
-  // runs always
-  err_code = app_timer_start(m_battery_timer_id, APP_TIMER_TICKS(1000), NULL);
-  APP_ERROR_CHECK(err_code);
 }
 
 // encoder motorL met 1 interrupt
@@ -1137,9 +1200,7 @@ void saadc_init(void)
 
 
 
-
 // pwm 
-
 static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
 
 // Declare variables holding PWM sequence values. In this example only one channel is used 
@@ -1190,7 +1251,6 @@ static void pwm_init(void)
   APP_ERROR_CHECK(nrf_drv_pwm_init(&m_pwm0, &config0, NULL));
 
 }
-
 
 //********  flash  erase and write
 
@@ -1312,6 +1372,33 @@ void my_scheduler_event_handler(void *p_event_data, uint16_t event_size)
   send_back(response);
 }
 
+/*
+  battery timer, pwm en saadc moeten alleen aan staat als verbonden
 
+ */
+void start_peripherals(void) {
+  uint32_t err_code;
+  // pwm
+  pwm_init();
+  // saadc
+  saadc_init();
+  // battery timer
+  err_code = app_timer_start(m_battery_timer_id, APP_TIMER_TICKS(1000), NULL);
+  APP_ERROR_CHECK(err_code);
 
+}
+
+void stop_peripherals(void) {
+  uint32_t err_code;
+  // pas op, kan er nog een commando in uitvoering zijn?
+  // battery timer
+  err_code = app_timer_stop(m_battery_timer_id);
+  APP_ERROR_CHECK(err_code);
+  // pwm
+  nrf_drv_pwm_uninit(&m_pwm0);
+  // saadc
+  err_code = nrf_drv_saadc_init(NULL, saadc_callback);
+  APP_ERROR_CHECK(err_code);
+
+}
 
