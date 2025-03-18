@@ -157,6 +157,7 @@ class Bluetooth {
     _currentConnectionStream = flutterReactiveBle.connectToAdvertisingDevice(
       id: deviceId,
       prescanDuration: const Duration(seconds: 1),
+      connectionTimeout: const Duration(seconds: 5),
       withServices: [_UART_UUID, _UART_RX, _UART_TX],
     );
     debugPrint("=====  onConDev 2");

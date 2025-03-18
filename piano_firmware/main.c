@@ -9,8 +9,8 @@
     now 20 msec sampling rate
 
     battery timer, pwm and saads only running when connected to app.
-    uses 0.1mA with only advertising. In theorie: 2600mA -> 2,4 jaar.
-
+    adv interval op 0,4 seconde: ongeveer 0,15mA: 2600mA -> 2 jaar
+    Ruim een jaar.
  */
 
 // Alleen nodig voor vscode
@@ -62,8 +62,7 @@
 #define APP_BLE_OBSERVER_PRIO           3                                           /**< Application's BLE observer priority. You shouldn't need to modify this value. */
 #define APP_BLE_CONN_CFG_TAG            1                                           /**< A tag identifying the SoftDevice BLE configuration. */
 
-#define APP_ADV_INTERVAL                300   // larger does not work with flutter app
-                                                                                    /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
+#define APP_ADV_INTERVAL                640                                         /**< The advertising interval (in units of 0.625 ms. This value corresponds to 400 ms). */
 
 // voorlopig infinity: 0     ( init.advdata.flags              = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE; )
 #define APP_ADV_DURATION                0                                           /**< The advertising duration (180 seconds) in units of 10 milliseconds. */

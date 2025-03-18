@@ -4,7 +4,7 @@ Commando's
 xya
 xya,b
   x: commando
-  y: motor left or right (l or not-l)
+  y: motor Left or Right (l or not-l)
        if not used: m (don't care), normally use commandletter, e.g. pp0,0
   a: par1
   b: par2
@@ -34,8 +34,8 @@ Dmx,y    :    set D values
 Ayx      :    (L) set accuval, (R) get accuval   (Commando F niet vergeten)
 Tmx      :    test motors. move motor randomly x times, end on position 0,0
 C        :    Calibrate motors: go to end stop and then to new position 0,0
-
-## testing
-ty       :    start (L) of stop (R) timer
-qy       :    start (L) if stop (R) motor/encoder
+R        :    Reset   
+## only for testing!
+t        :    turn system off
+qy       :    remove battery voltage test until next reset(L), or not(R)
 cy       :    control on (L) and off (R)

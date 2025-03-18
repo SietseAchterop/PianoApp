@@ -94,6 +94,7 @@ extern const uint32_t mydatapage[100];
 // batterijspanning via pin 7 van arduino. is NRF_SAADC_INPUT_AIN5 in Nordic SDK maar ARDUINO_A3_PIN bij arduino. Raar.
 float battery = 8.0;
 float batt    = 8.0;
+bool  battok  = true; // skip battery test
 
 // an error occured 0; no error, 1 error, 2 notified app
 int error = 0;
@@ -390,7 +391,7 @@ char * process(char * command)
     break;
 #endif
   case 'C' :
-    if (batt < 6.5) break;
+    if (batt < 6.5 && battok) break;
     sprintf(response, "Calibrate");
 
 #if DEBUG
@@ -409,18 +410,14 @@ char * process(char * command)
     // no control at first
     timer_start();
     break;
-  case 't' :   // timer start en stop      Alleen voor testen
-    if (motL) {
-      timer_start();
-    } else {
-      timer_stop();
-    }
+  case 't' :   // turn system off, for testing
+    sd_power_system_off();
     break;
-  case 'q' :   // test high site switch   tijdelijk
+  case 'q' :   // remove battery voltage test
     if (motL) {
-      encmotor(true);
+      battok = false;
     } else {
-      encmotor(false);
+      battok = true;
     }
     break;
   case 'c' : // control output on and off   Alleen voor testen
