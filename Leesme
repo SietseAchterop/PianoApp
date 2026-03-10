@@ -1,0 +1,34 @@
+
+pushbutton voor aan/uit
+
+https://www.youtube.com/watch?v=rlD65Sfrk3
+
+https://electronics.stackexchange.com/questions/570373/push-button-controlled-pmos-high-side-switch-circuit-review
+
+
+waarom optocoupler nodig?
+geen stroom wanneer het uit staat.
+
+https://forum.arduino.cc/t/what-is-the-best-button-toggle-circuit/1252145/2
+
+ook uitzetten met pushbutton nodig?
+Niet echt, is zoiezo al redelijk low-power
+en uitzetten kan ook via smartphone
+
+https://randomnerdtutorials.com/latching-power-switch-circuit-auto-power-off-circuit-esp32-esp8266-arduino/
+
+https://www.youtube.com/watch?v=nbMfb0dIvYc&t=261s
+
+irf7319
+
+
+
+== alternatief voor 2x li-ion houder (smd)
+
+https://nl.aliexpress.com/item/1005004222668990.html?spm=a2g0o.tesla.0.0.449bXWlUXWlUwB&pdp_npi=6%40dis%21EUR%21%E2%82%AC1%2C18%21%E2%82%AC0%2C94%21%21%21%21%21%40210388c917727922597715468ee244%2112000028432006368%21btfpre%21%21%21%211%210%21&afTraceInfo=1005004222668990__pc__c_ppc_item_bridge_pc_main__7fr0Op1__1772792259855&gatewayAdapt=glo2nld#nav-specification
+  langer dan keystone!
+
+https://www.tinytronics.nl/en/power/battery-holders-and-clips/18650/2x-18650-battery-holder-for-pcb
+  bk-18650-pc4   ook bij conrad gaten 72.50 x  19.30
+  zelfde als keystone  (2.50 ipv 7 euro)
+  
