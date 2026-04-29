@@ -555,6 +555,511 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "GND_1"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "GND_1_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND_1_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "GND_2"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "GND_2_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND_2_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "GND_3"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "GND_3_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND_3_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "GND_4"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "GND_4_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND_4_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "GND_5"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "GND"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "GND_5_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "GND_5_1_1"
+				(pin power_in line
+					(at 0 0 270)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "IRF7319:IRF7319"
 			(pin_names
 				(offset 1.016)
@@ -581,7 +1086,7 @@
 				)
 			)
 			(property "Footprint" "IRF7319:SOIC127P600X175-8N"
-				(at -25.4 5.08 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -609,7 +1114,7 @@
 				)
 			)
 			(property "MF" "Infineon Technologies"
-				(at -21.844 10.922 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -619,7 +1124,7 @@
 				)
 			)
 			(property "Description_1" "Mosfet Array N and P-Channel 30V - 2W Surface Mount 8-SO"
-				(at -16.51 -3.81 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -629,7 +1134,7 @@
 				)
 			)
 			(property "Package" "SOIC-8 International Rectifier"
-				(at -25.146 2.286 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -639,7 +1144,7 @@
 				)
 			)
 			(property "Price" "None"
-				(at -8.382 0.508 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -649,7 +1154,7 @@
 				)
 			)
 			(property "Check_prices" "https://www.snapeda.com/parts/IRF7319/Infineon/view-part/?ref=eda"
-				(at -11.938 14.986 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -659,7 +1164,7 @@
 				)
 			)
 			(property "STANDARD" "IPC 7351B"
-				(at 8.89 1.778 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -679,7 +1184,7 @@
 				)
 			)
 			(property "SnapEDA_Link" "https://www.snapeda.com/parts/IRF7319/Infineon/view-part/?ref=snap"
-				(at -24.384 -8.636 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -689,7 +1194,7 @@
 				)
 			)
 			(property "MP" "IRF7319"
-				(at 8.636 -13.208 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -699,7 +1204,7 @@
 				)
 			)
 			(property "Purchase-URL" "https://www.snapeda.com/api/url_track_click_mouser/?unipart_id=424401&manufacturer=Infineon Technologies&part_name=IRF7319&search_term=None"
-				(at -1.27 7.874 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -709,7 +1214,7 @@
 				)
 			)
 			(property "Availability" "In Stock"
-				(at 9.652 4.318 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -719,7 +1224,7 @@
 				)
 			)
 			(property "MANUFACTURER" "IOR"
-				(at 9.398 -1.524 0)
+				(at 0 0 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1707,8 +2212,12 @@
 		)
 		(symbol "power:GND"
 			(power)
+			(pin_numbers
+				(hide yes)
+			)
 			(pin_names
 				(offset 0)
+				(hide yes)
 			)
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -1757,7 +2266,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "power-flag"
+			(property "ki_keywords" "global power"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1784,8 +2293,7 @@
 				(pin power_in line
 					(at 0 0 270)
 					(length 0)
-					(hide yes)
-					(name "GND"
+					(name "~"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1798,6 +2306,107 @@
 								(size 1.27 1.27)
 							)
 						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "power:PWR_FLAG"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#FLG"
+				(at 0 1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "PWR_FLAG"
+				(at 0 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Special symbol for telling ERC where power comes from"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "flag power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "PWR_FLAG_0_0"
+				(pin power_out line
+					(at 0 0 90)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
 					)
 				)
 			)
@@ -1867,6 +2476,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "d0b0074e-2b22-4186-8975-3f9ea34f8700")
+	)
+	(junction
+		(at 245.11 46.99)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "dc20afc8-a3f3-4d6f-8c08-881bd52c270e")
 	)
 	(junction
 		(at 205.74 69.85)
@@ -1943,6 +2558,16 @@
 			(type default)
 		)
 		(uuid "279d1172-ab8f-48ca-80bd-4e4812131991")
+	)
+	(wire
+		(pts
+			(xy 245.11 46.99) (xy 256.54 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "292a9639-96a2-4e13-9161-1e779d1d02a8")
 	)
 	(wire
 		(pts
@@ -2056,7 +2681,7 @@
 	)
 	(wire
 		(pts
-			(xy 224.79 46.99) (xy 256.54 46.99)
+			(xy 224.79 46.99) (xy 245.11 46.99)
 		)
 		(stroke
 			(width 0)
@@ -2214,18 +2839,8 @@
 		)
 		(uuid "f3044f68-903d-4063-b253-30d8e3a83eae")
 	)
-	(label "GPIO"
-		(at 179.07 67.31 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "39f9b339-8af7-4f1c-902e-3bbf9e667a76")
-	)
 	(label "Vgate"
-		(at 219.71 58.42 0)
+		(at 219.71 55.88 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -2255,71 +2870,6 @@
 			(justify left)
 		)
 		(uuid "d692b5e6-71b2-4fa6-bc83-618add8d8fef")
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 80.01 29.21 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "00000000-0000-0000-0000-00006072c579")
-		(property "Reference" "#PWR014"
-			(at 80.01 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 80.137 33.6042 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 80.01 29.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 80.01 29.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 80.01 29.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "84f3e33e-3762-448b-9363-ce47ebcee824")
-		)
-		(instances
-			(project ""
-				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
-					(reference "#PWR014")
-					(unit 1)
-				)
-			)
-		)
 	)
 	(symbol
 		(lib_id "Device:C")
@@ -2382,139 +2932,9 @@
 			(uuid "d1fcdc11-1996-420d-b1ce-1b0dc4d4c904")
 		)
 		(instances
-			(project ""
+			(project "piano_pcb"
 				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
 					(reference "C3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 256.54 54.61 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "00000000-0000-0000-0000-0000607dd365")
-		(property "Reference" "#PWR013"
-			(at 256.54 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 256.667 59.0042 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 256.54 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 256.54 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 256.54 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "3cabb1b1-c07d-4bb4-9e77-6580189e4929")
-		)
-		(instances
-			(project ""
-				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
-					(reference "#PWR013")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 138.43 130.81 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "00000000-0000-0000-0000-000060d98734")
-		(property "Reference" "#PWR012"
-			(at 138.43 137.16 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 138.557 135.2042 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 138.43 130.81 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 138.43 130.81 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 138.43 130.81 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "6c7a8b96-b512-4ccd-8e6c-3adc507d5f35")
-		)
-		(instances
-			(project ""
-				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
-					(reference "#PWR012")
 					(unit 1)
 				)
 			)
@@ -2585,74 +3005,9 @@
 			(uuid "2695d85b-4366-414d-80b7-3210677e8e13")
 		)
 		(instances
-			(project ""
+			(project "piano_pcb"
 				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
 					(reference "U3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 40.64 160.02 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "00000000-0000-0000-0000-0000613466ee")
-		(property "Reference" "#PWR011"
-			(at 40.64 166.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 40.767 164.4142 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 40.64 160.02 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 40.64 160.02 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 40.64 160.02 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "25604373-076d-439f-9150-71198053cdb5")
-		)
-		(instances
-			(project ""
-				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
-					(reference "#PWR011")
 					(unit 1)
 				)
 			)
@@ -2723,7 +3078,7 @@
 			(uuid "d80413e2-657c-449a-9056-cae18cc05e09")
 		)
 		(instances
-			(project ""
+			(project "piano_pcb"
 				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
 					(reference "U2")
 					(unit 1)
@@ -2790,7 +3145,7 @@
 			(uuid "691dd9b1-ffc6-44f6-a57d-04c4648b05f0")
 		)
 		(instances
-			(project ""
+			(project "piano_pcb"
 				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
 					(reference "J6")
 					(unit 1)
@@ -2860,7 +3215,7 @@
 			(uuid "f681153c-a435-4649-ade1-e6f943ef4519")
 		)
 		(instances
-			(project ""
+			(project "piano_pcb"
 				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
 					(reference "J7")
 					(unit 1)
@@ -2869,45 +3224,35 @@
 		)
 	)
 	(symbol
-		(lib_id "IRF7319:IRF7319")
-		(at 217.17 67.31 0)
+		(lib_name "GND_5")
+		(lib_id "power:GND")
+		(at 217.17 82.55 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
-		(uuid "146c0072-b3d2-48b1-b423-e688fa2b3898")
-		(property "Reference" "Q3"
-			(at 220.98 66.0399 0)
+		(uuid "10149eae-3abc-4800-b397-e1d71cb0467b")
+		(property "Reference" "#PWR015"
+			(at 217.17 88.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
-			)
-		)
-		(property "Value" "IRF7319"
-			(at 220.98 68.5799 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "library:SOIC127P600X175-8N"
-			(at 191.77 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
 				(hide yes)
 			)
 		)
-		(property "Datasheet" ""
-			(at 217.17 67.31 0)
+		(property "Value" "GND"
+			(at 217.17 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 217.17 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2915,8 +3260,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 217.17 67.31 0)
+		(property "Datasheet" ""
+			(at 217.17 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2924,154 +3269,22 @@
 				(hide yes)
 			)
 		)
-		(property "MF" "Infineon Technologies"
-			(at 195.326 56.388 0)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 217.17 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify bottom)
 				(hide yes)
 			)
-		)
-		(property "Description_1" "Mosfet Array N and P-Channel 30V - 2W Surface Mount 8-SO"
-			(at 200.66 71.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Package" "SOIC-8 International Rectifier"
-			(at 192.024 65.024 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Price" "None"
-			(at 208.788 66.802 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Check_prices" "https://www.snapeda.com/parts/IRF7319/Infineon/view-part/?ref=eda"
-			(at 205.232 52.324 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "STANDARD" "IPC 7351B"
-			(at 226.06 65.532 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "PARTREV" ""
-			(at 217.17 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "SnapEDA_Link" "https://www.snapeda.com/parts/IRF7319/Infineon/view-part/?ref=snap"
-			(at 192.786 75.946 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MP" "IRF7319"
-			(at 225.806 80.518 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Purchase-URL" "https://www.snapeda.com/api/url_track_click_mouser/?unipart_id=424401&manufacturer=Infineon Technologies&part_name=IRF7319&search_term=None"
-			(at 215.9 59.436 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Availability" "In Stock"
-			(at 226.822 62.992 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MANUFACTURER" "IOR"
-			(at 226.568 68.834 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(pin "8"
-			(uuid "d9adbe9b-bee6-437c-9055-0a0a4897aff2")
-		)
-		(pin "7"
-			(uuid "1e9c8fb4-9581-4517-8b64-8046090dbe21")
-		)
-		(pin "2"
-			(uuid "3c9af591-96e9-4d59-931e-33c589c3ec0b")
-		)
-		(pin "5"
-			(uuid "78cea5d8-44df-4df4-a14c-801232b5941d")
-		)
-		(pin "3"
-			(uuid "48844056-03a2-4c63-8d87-21178a597cf2")
 		)
 		(pin "1"
-			(uuid "3b7f9239-0eb6-4516-8c4f-7405eecdee19")
-		)
-		(pin "6"
-			(uuid "09662f34-e4b9-4843-8609-6be0f966689e")
-		)
-		(pin "4"
-			(uuid "fcdad672-c490-4932-812a-ea69e1d9e9e2")
+			(uuid "b017d606-8cdf-4a92-b7be-dc96277d851f")
 		)
 		(instances
-			(project ""
+			(project "piano_pcb"
 				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
-					(reference "Q3")
+					(reference "#PWR015")
 					(unit 1)
 				)
 			)
@@ -3147,16 +3360,18 @@
 		)
 	)
 	(symbol
+		(lib_name "GND_2")
 		(lib_id "power:GND")
-		(at 217.17 82.55 0)
+		(at 40.64 160.02 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "5e065cd4-d19d-449d-904e-c44f0edc5dc6")
-		(property "Reference" "#PWR09"
-			(at 217.17 88.9 0)
+		(fields_autoplaced yes)
+		(uuid "2588a7a5-7ef0-4400-92bd-d46600ec5f2e")
+		(property "Reference" "#PWR011"
+			(at 40.64 166.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3165,7 +3380,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 217.297 86.9442 0)
+			(at 40.64 165.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3173,7 +3388,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 217.17 82.55 0)
+			(at 40.64 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3182,7 +3397,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 217.17 82.55 0)
+			(at 40.64 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3190,8 +3405,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 217.17 82.55 0)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 40.64 160.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3200,28 +3415,30 @@
 			)
 		)
 		(pin "1"
-			(uuid "dfa1008e-db76-4b40-9f2d-e50a3b4d6406")
+			(uuid "8c746b43-b2e2-4a0f-bb11-1f6c0e3338bf")
 		)
 		(instances
 			(project "piano_pcb"
 				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
-					(reference "#PWR09")
+					(reference "#PWR011")
 					(unit 1)
 				)
 			)
 		)
 	)
 	(symbol
+		(lib_name "GND_1")
 		(lib_id "power:GND")
-		(at 267.97 54.61 0)
+		(at 80.01 29.21 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "5fe4ab30-9c5b-4d03-b07c-16329b6854c2")
-		(property "Reference" "#PWR015"
-			(at 267.97 60.96 0)
+		(fields_autoplaced yes)
+		(uuid "2b046366-f6d4-40f6-9163-8d2adc73842b")
+		(property "Reference" "#PWR014"
+			(at 80.01 35.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3230,7 +3447,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 268.097 59.0042 0)
+			(at 80.01 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3238,7 +3455,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 267.97 54.61 0)
+			(at 80.01 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3247,7 +3464,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 267.97 54.61 0)
+			(at 80.01 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3255,8 +3472,8 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 267.97 54.61 0)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 80.01 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3265,12 +3482,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "ef157513-6983-4f88-80e7-c094a363c60b")
+			(uuid "5c373f62-81a9-42a2-804d-390533d8f59a")
 		)
 		(instances
 			(project "piano_pcb"
 				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
-					(reference "#PWR015")
+					(reference "#PWR014")
 					(unit 1)
 				)
 			)
@@ -3339,6 +3556,72 @@
 			(project "piano_pcb"
 				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
 					(reference "R3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 138.43 130.81 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "6f50deec-beba-4444-8595-4dcb4952340c")
+		(property "Reference" "#PWR012"
+			(at 138.43 137.16 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 138.43 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 138.43 130.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 138.43 130.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 138.43 130.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "aac72cf0-d494-4d06-8921-b295b1a2b74a")
+		)
+		(instances
+			(project "piano_pcb"
+				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
+					(reference "#PWR012")
 					(unit 1)
 				)
 			)
@@ -3422,27 +3705,25 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "92023a0c-00ba-47e8-9a53-3c967874847b")
-		(property "Reference" "Q3"
-			(at 220.9801 43.18 0)
+		(uuid "9badba0e-be49-436e-a84a-221affd14125")
+		(property "Reference" "Q2"
+			(at 219.71 40.64 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "IRF7319"
-			(at 218.4401 43.18 0)
+			(at 219.71 43.18 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Footprint" "library:SOIC127P600X175-8N"
-			(at 224.79 72.39 0)
+			(at 219.71 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3470,7 +3751,7 @@
 			)
 		)
 		(property "MF" "Infineon Technologies"
-			(at 230.632 68.834 0)
+			(at 219.71 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3480,7 +3761,7 @@
 			)
 		)
 		(property "Description_1" "Mosfet Array N and P-Channel 30V - 2W Surface Mount 8-SO"
-			(at 215.9 63.5 0)
+			(at 219.71 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3490,7 +3771,7 @@
 			)
 		)
 		(property "Package" "SOIC-8 International Rectifier"
-			(at 221.996 72.136 0)
+			(at 219.71 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3500,7 +3781,7 @@
 			)
 		)
 		(property "Price" "None"
-			(at 220.218 55.372 0)
+			(at 219.71 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3510,7 +3791,7 @@
 			)
 		)
 		(property "Check_prices" "https://www.snapeda.com/parts/IRF7319/Infineon/view-part/?ref=eda"
-			(at 234.696 58.928 0)
+			(at 219.71 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3520,7 +3801,7 @@
 			)
 		)
 		(property "STANDARD" "IPC 7351B"
-			(at 221.488 38.1 0)
+			(at 219.71 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3540,7 +3821,7 @@
 			)
 		)
 		(property "SnapEDA_Link" "https://www.snapeda.com/parts/IRF7319/Infineon/view-part/?ref=snap"
-			(at 211.074 71.374 0)
+			(at 219.71 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3550,7 +3831,7 @@
 			)
 		)
 		(property "MP" "IRF7319"
-			(at 206.502 38.354 0)
+			(at 219.71 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3560,7 +3841,7 @@
 			)
 		)
 		(property "Purchase-URL" "https://www.snapeda.com/api/url_track_click_mouser/?unipart_id=424401&manufacturer=Infineon Technologies&part_name=IRF7319&search_term=None"
-			(at 227.584 48.26 0)
+			(at 219.71 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3570,7 +3851,7 @@
 			)
 		)
 		(property "Availability" "In Stock"
-			(at 224.028 37.338 0)
+			(at 219.71 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3580,7 +3861,7 @@
 			)
 		)
 		(property "MANUFACTURER" "IOR"
-			(at 218.186 37.592 0)
+			(at 219.71 46.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -3589,35 +3870,169 @@
 				(hide yes)
 			)
 		)
-		(pin "8"
-			(uuid "d9adbe9b-bee6-437c-9055-0a0a4897aff3")
-		)
-		(pin "7"
-			(uuid "1e9c8fb4-9581-4517-8b64-8046090dbe22")
-		)
-		(pin "2"
-			(uuid "3c9af591-96e9-4d59-931e-33c589c3ec0c")
+		(pin "3"
+			(uuid "6b82b2e2-f500-4e0b-a08e-200ce4e9a2f6")
 		)
 		(pin "5"
-			(uuid "78cea5d8-44df-4df4-a14c-801232b5941e")
-		)
-		(pin "3"
-			(uuid "48844056-03a2-4c63-8d87-21178a597cf3")
-		)
-		(pin "1"
-			(uuid "3b7f9239-0eb6-4516-8c4f-7405eecdee1a")
-		)
-		(pin "6"
-			(uuid "09662f34-e4b9-4843-8609-6be0f966689f")
+			(uuid "a0bcf650-1653-4da9-bf3f-bb1f23b0b47d")
 		)
 		(pin "4"
-			(uuid "fcdad672-c490-4932-812a-ea69e1d9e9e3")
+			(uuid "0107ee6a-03a2-4acf-be3c-cfc474b5805b")
+		)
+		(pin "1"
+			(uuid "f92e406e-e07d-47f9-acc7-9889c6cea73f")
+		)
+		(pin "8"
+			(uuid "394c44c4-e23a-458c-bd2e-7d92e0102328")
+		)
+		(pin "7"
+			(uuid "79f79409-650d-48d0-a65a-e2ec174dec58")
+		)
+		(pin "6"
+			(uuid "dc3e892f-2b1b-4026-a15b-5c74b20fb1c9")
+		)
+		(pin "2"
+			(uuid "d7684b09-8f64-4eca-9a03-58506962d409")
 		)
 		(instances
-			(project ""
+			(project "piano_pcb"
 				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
-					(reference "Q3")
+					(reference "Q2")
 					(unit 2)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_name "GND_4")
+		(lib_id "power:GND")
+		(at 256.54 54.61 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "afde84c1-b6c9-41e8-95a9-a0092793ba66")
+		(property "Reference" "#PWR013"
+			(at 256.54 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 256.54 59.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 256.54 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 256.54 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 256.54 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9e3e6077-9071-4735-a21b-564bf5c99d99")
+		)
+		(instances
+			(project "piano_pcb"
+				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
+					(reference "#PWR013")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_name "GND_3")
+		(lib_id "power:GND")
+		(at 267.97 54.61 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "b8888eee-2e0f-4e53-8576-133a48adce23")
+		(property "Reference" "#PWR09"
+			(at 267.97 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 267.97 59.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 267.97 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 267.97 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 267.97 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b6e875a5-bb4d-404e-a8fc-9dd76618a626")
+		)
+		(instances
+			(project "piano_pcb"
+				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
+					(reference "#PWR09")
+					(unit 1)
 				)
 			)
 		)
@@ -3685,6 +4100,281 @@
 			(project "piano_pcb"
 				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
 					(reference "R4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "IRF7319:IRF7319")
+		(at 217.17 67.31 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c3a5a900-356f-4770-a422-709066bb02f4")
+		(property "Reference" "Q2"
+			(at 220.98 66.0399 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "IRF7319"
+			(at 220.98 68.5799 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "library:SOIC127P600X175-8N"
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" "Infineon Technologies"
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Description_1" "Mosfet Array N and P-Channel 30V - 2W Surface Mount 8-SO"
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Package" "SOIC-8 International Rectifier"
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Price" "None"
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Check_prices" "https://www.snapeda.com/parts/IRF7319/Infineon/view-part/?ref=eda"
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" "IPC 7351B"
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "SnapEDA_Link" "https://www.snapeda.com/parts/IRF7319/Infineon/view-part/?ref=snap"
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MP" "IRF7319"
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" "https://www.snapeda.com/api/url_track_click_mouser/?unipart_id=424401&manufacturer=Infineon Technologies&part_name=IRF7319&search_term=None"
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "Availability" "In Stock"
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MANUFACTURER" "IOR"
+			(at 217.17 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify bottom)
+				(hide yes)
+			)
+		)
+		(pin "3"
+			(uuid "6b82b2e2-f500-4e0b-a08e-200ce4e9a2f7")
+		)
+		(pin "5"
+			(uuid "a0bcf650-1653-4da9-bf3f-bb1f23b0b47e")
+		)
+		(pin "4"
+			(uuid "0107ee6a-03a2-4acf-be3c-cfc474b5805c")
+		)
+		(pin "1"
+			(uuid "f92e406e-e07d-47f9-acc7-9889c6cea740")
+		)
+		(pin "8"
+			(uuid "394c44c4-e23a-458c-bd2e-7d92e0102329")
+		)
+		(pin "7"
+			(uuid "79f79409-650d-48d0-a65a-e2ec174dec59")
+		)
+		(pin "6"
+			(uuid "dc3e892f-2b1b-4026-a15b-5c74b20fb1ca")
+		)
+		(pin "2"
+			(uuid "d7684b09-8f64-4eca-9a03-58506962d40a")
+		)
+		(instances
+			(project "piano_pcb"
+				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
+					(reference "Q2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 245.11 46.99 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "dba06979-adb8-4577-add0-c352057afe9a")
+		(property "Reference" "#FLG02"
+			(at 245.11 45.085 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 245.11 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 245.11 46.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 245.11 46.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 245.11 46.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9b8bdc12-bda5-496c-b1e2-27f727d6a417")
+		)
+		(instances
+			(project "piano_pcb"
+				(path "/ee41cb8e-512d-41d2-81e1-3c50fff32aeb/00000000-0000-0000-0000-00006048eab7"
+					(reference "#FLG02")
 					(unit 1)
 				)
 			)

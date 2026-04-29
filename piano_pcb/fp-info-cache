@@ -1,4 +1,4 @@
-25642094121228274
+25645642150384775
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -102655,6 +102655,13 @@ CN3302-FP
 4
 4
 library
+MSOP-10_3x3mm_P0.5mm
+MSOP, 10 Pin (https://www.jedec.org/system/files/docs/mo-187F.pdf variant BA), generated with kicad-footprint-generator ipc_gullwing_generator.py
+MSOP SO Texas_DGS0010A
+0
+10
+10
+library
 NANO_33_BLE
 Through hole straight socket strip, 1x15, 2.54mm pitch
 Through hole socket strip THT 1x15 2.54mm single row
@@ -102703,6 +102710,13 @@ SSOP 0.65
 0
 24
 24
+library
+VSSOP-8_3x3mm_P0.65mm
+VSSOP, 8 Pin (https://www.jedec.org/standards-documents/docs/mo-187-f), generated with kicad-footprint-generator ipc_gullwing_generator.py
+VSSOP SO JEDEC-MO-187-AA TI-DGK0008A
+0
+8
+8
 library
 din-5
 Din 5 (MIDI), Pro Signal P/N PSG03463
